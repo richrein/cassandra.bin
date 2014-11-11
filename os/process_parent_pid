@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+
+export thisCommand=`basename $0`
+
+if [ x"$1" = x ] ; then
+	echo "Missing pid in arg 1"
+	exit 1
+fi
+
+ps -o ppid= $1

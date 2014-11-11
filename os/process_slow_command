@@ -1,0 +1,24 @@
+#!/usr/bin/env sudo bash
+
+# process_slow_pids `process_pids_find "$@"`
+
+trace_cmd () {
+	cmd="$1"; shift
+	echo "$cmd" "$@"
+	"$cmd" "$@"
+}
+
+while [ 1 ]; do
+	# The pids for a command may change. Reaquire the list of pids every 5 seconds.
+	slowPids=`process_pids_of_command "$@"`
+	trap 'kill -SIGCONT $slowPids 2>/dev/null' EXIT
+	if [ x"$slowPids" = x ]; then echo Command not running; exit 0; fi
+
+	for i in {1..10}; do
+		# SIGSTOP and SIGCONT the processes to reduce CPU used 2>/dev/null
+	   	kill -SIGSTOP $slowPids 2>/dev/null;
+		sleep 0.50;
+		kill -SIGCONT $slowPids 2>/dev/null;
+		sleep 0.10
+	done
+done

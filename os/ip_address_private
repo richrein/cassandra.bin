@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+if [ "`uname -a | grep -i ubuntu 2>/dev/null`x" == x ] ; then
+	# Mac OSx
+	# lo0                             0xff000000                        127.0.0.1        ::1
+	# en1        00:23:12:55:3b:34    0xffffff00       192.168.0.255    192.168.0.141    fe80::223:12ff:fe55:3b34%en1
+	ip_interfaces | while read interface macaddr mask subnet ip_address xx
+	do
+		case "$interface" in
+		"en1") echo $ip_address; exit;;
+		*) continue;;
+		esac
+	done 
+else
+	# Ubuntu
+	ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
+fi
+

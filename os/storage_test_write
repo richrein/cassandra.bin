@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+#
+# Trivial disk write test.
+# use FIO for a more useful test
+#
+
+export thisCommand=`basename $0`
+
+if [ x"$1" == x ]; then
+	echo "Error: missing directory name"
+	echo "Usage: $thisCommand dir"
+	exit 1
+else
+	dirName="$1"; shift
+	if [ ! -d "$dirName" ]; then echo "No such dir: $dirName"; exit 1; fi
+fi
+trap "sudo rm -f $dirName/loadtest.removeme" EXIT
+
+# test should be big enough to flood the buffering of the system and use the direct io flag if you dd supports ig
+time sudo dd if=/dev/zero of="$dirName/loadtest.removeme" bs=10240000 count=1500 # oflag=direct # if direct io is supported by your dd

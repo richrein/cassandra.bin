@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+###
+### process scripts - rich rein v2013
+###
+
+export thisCommand=`basename $0`
+
+if [ x"$1" == x ]; then
+	echo "Error: missing file or directory name"
+	echo "Usage: $thisCommand file"
+	exit 1
+fi
+
+echo `echo 0; find "$@" -type f -exec ls -l {} \; | sed -e 's/[^0-9]*[0-9]*[^0-9]*\([0-9]*\).*/+\1/'` | bc -q

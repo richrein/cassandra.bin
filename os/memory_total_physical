@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+#
+# Pause a list of processes and restart when user presses return
+#
+# Rich Rein 2012.04.23
+#
+
+export thisCommand=`basename $0`
+
+trace_cmd () {
+	cmd="$1"; shift
+	echo "$cmd" "$@"
+	"$cmd" "$@"
+}
+
+case `uname -a` in
+    *Darwin*)
+        sysctl -a | grep 'hw.memsize:' | sed -e 's/[^0-9]*\([0-9]*\).*/\1/'
+        ;;
+    *Ubuntu*)
+        echo `grep MemTotal /proc/meminfo | sed -e 's/[^0-9]*\([0-9]*\).*/\1/'` '* 1024' | bc
+        ;;
+    *)
+        echo unknown os 1>&2
+        exit 1
+        ;;
+esac

@@ -1,0 +1,7 @@
+#!/usr/bin/env sudo bash
+
+###
+### process scripts - rich rein v2013
+###
+
+process_pause_pids `process_pids_of_command "$@"`

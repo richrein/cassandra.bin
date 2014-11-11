@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+###
+### Script to ask ec2 or other for current address
+###
+### Rich Rein
+###
+
+###
+### global methods
+###
+curl -s icanhazip.com
+# curl -s 'http://checkip.dyndns.org' | sed 's/.*Current IP Address: \([0-9\.]*\).*/\1/g'
+
+###
+### EC2 only methods
+###
+# curl http://169.254.169.254/latest/meta-data/public-ipv4
+# wget -qO- http://instance-data/latest/meta-data/public-ipv4

@@ -1,0 +1,27 @@
+#!/usr/bin/env sudo bash
+
+#
+# Pause a list of processes and restart when user presses return
+#
+
+trace_cmd () {
+	cmd="$1"; shift
+	echo "$cmd" "$@"
+	"$cmd" "$@"
+}
+
+for pid
+do
+	if ! kill -0 $pid > /dev/null 2>&1; then
+		echo "Could not find process for pid: $pid" >&2
+		exit 1
+	fi
+done
+
+# always restart all processes
+trap 'trace_cmd kill -SIGCONT "$@"' EXIT
+
+trace_cmd kill -SIGSTOP "$@"
+
+printf "%s" "Press return to resume processes: "
+read a

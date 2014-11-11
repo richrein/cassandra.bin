@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+#
+# Simple disk read test
+#
+
+# You want to avoid reading buffers in cache instead of disk.
+# If direct is supported by your du, it is the best solution.
+# If not, then if supported flush a disk buffers with "drop_caches"
+# If not, only run after reboot and print the following message
+echo "Due to caching, you can only run this once per day/reboot." 
+
+
+export thisCommand=`basename $0`
+
+if [ x"$1" == x ]; then
+	echo "Error: missing file name"
+	echo "Usage: $thisCommand file"
+	exit 1
+else
+	fileName="$1"; shift
+	if [ ! -f "$fileName" ]; then echo "No such dir: $fileName"; exit 1; fi
+fi
+
+#
+# echo 3 > /proc/sys/vm/drop_caches # 1 frees Pagecache, 2 frees Dentries & Inodes, and 3 is free all
+#
+
+set -x
+time sudo dd of=/dev/null if="$fileName" bs=102400000 count=1500 # iflag=direct

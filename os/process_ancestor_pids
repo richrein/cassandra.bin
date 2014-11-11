@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+export thisCommand=`basename $0`
+
+if [ x"$1" = x ] ; then
+	echo "Error: Missing pid"
+	echo "Usage: $thisCommand pid"
+	exit 1
+fi
+pid=$1; shift
+pidList=
+
+while [ x"$pid" != x ]; do
+	pid=`ps -o ppid= $pid`
+	if [ $pid == 1 ]; then break; fi
+	pidList="$pidList $pid"
+
+done
+echo $pidList

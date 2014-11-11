@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+for ifName in `ifconfig -l` ; 
+do
+	echo `ifconfig $ifName`
+done \
+| grep -i inet \
+| sed -e 's/://' \
+| while read line
+do
+	Fields=($line) 
+
+	ifName="${Fields[0]}" 
+	Fields=("${Fields[@]:1}") # delete 1
+
+	while [ ! -z "${Fields[0]}" ] ; do
+		case "${Fields[0]}" in
+		inet6)		inet6="${Fields[1]}"	;;
+		inet)		inet="${Fields[1]}"	;;
+		netmask)	netmask="${Fields[1]}"	;;
+		broadcast)	broadcast="${Fields[1]}";;
+		ether)		ether="${Fields[1]}"	;;
+		*)		
+# echo " (Skipping ${Fields[0]}) "
+				Fields=("${Fields[@]:1}"); 
+				continue 1; ;;
+		esac
+# echo " (value ${Fields[1]}) "
+		Fields=("${Fields[@]:2}") # delete and shift 2 array elements
+	done
+	
+	printf "%-10s %-20s %-16s %-16s %-16s %s\n" "$ifName" "$ether" "$netmask" "$broadcast" "$inet" "$inet6"
+done

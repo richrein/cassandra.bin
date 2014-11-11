@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+
+export thisCommand=`basename $0`
+
+if [ x"$1" = x ] ; then
+	echo "Missing command name search pattern in arg 1"
+	exit 1
+fi
+
+exludePids=" $$ `process_ancestor_pids $$`" # exclude self and parents from pid list
+for commandPattern
+do 
+	export commandPattern
+	ps -ef \
+	| awk '(($0 ~ ENVIRON["commandPattern"]) && !($0 ~ ENVIRON["thisCommand"])) { print $2 }' # ignores similar commands
+done \
+| sort -u \
+| while read pid; do
+	for exludePid in $exludePids; do
+		if [ $pid -eq $exludePid ]; then continue 2; fi
+	done
+	echo $pid
+done

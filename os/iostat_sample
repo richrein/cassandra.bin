@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+seconds=10
+lines=`iostat -c -d  2>&1 | wc -l`
+lines=`echo $lines - 2 | bc -q`
+
+iostat -c -d $seconds 2 2>&1 | tail -n $lines
