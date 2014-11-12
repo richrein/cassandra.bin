@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo 'select keyspace_name, columnfamily_name, key_alias, key_aliases, key_validator from system.schema_columnfamilies;' | cqlsh # | tail --lines +4
+

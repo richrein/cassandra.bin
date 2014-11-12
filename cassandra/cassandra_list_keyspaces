@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo 'select * from system.schema_keyspaces ;' | cqlsh # | tail --lines +4

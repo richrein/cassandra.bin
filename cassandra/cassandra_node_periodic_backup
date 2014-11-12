@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+
+if [ x"$1" = x ]; then
+	echo "Error: Missing arg1 with backup directy";
+else
+BackupDir="$1"; shift
+fi
+
+if [ x"$1" = x ]; then
+KeyspaceName=
+else
+KeyspaceName="$1"; shift
+fi
+
+# A snapshot first flushes all in-memory writes to disk, then makes a hard link of the SSTable files for each keyspace.
+# By default the snapshot files are stored in the /var/lib/cassandra/data/<keyspace_name>/<table_name>/snapshots directory
+
+set -x
+nodetool -h localhost -p 7199 snapshot $KeyspaceName
+
+sudo rsync -av --delete "/var/lib/cassandra/data/$KeyspaceName" "$BackupDir"
+

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo 'select * from system.schema_columns;' | cqlsh # | tail --lines +4
+

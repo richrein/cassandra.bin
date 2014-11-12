@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# 
+# cassandra starts resyncing with the other nodes when auto_bootstrap is enabled
+# Use this to configure before allowing the node to sync data
+# requires restart or auto scan of cassandra.yaml configured
+#
+
+set -e
+if [ ! -f /etc/cassandra/cassandra.yaml.orig ]; then
+	sudo cp /etc/cassandra/cassandra.yaml /etc/cassandra/cassandra.yaml.orig
+fi
+
+case "$1" in
+enable)
+	: Enable auto_bootstrap
+	cat /etc/cassandra/cassandra.yaml \
+	| sed -e "s:.*\(auto_bootstrap\:\).*:auto_bootstrap\: true:" \
+	> /tmp/cassandra.yaml.new
+	sudo mv /tmp/cassandra.yaml.new /etc/cassandra/cassandra.yaml 
+	;;
+disable)
+	: Disable auto_bootstrap
+	cat /etc/cassandra/cassandra.yaml \
+	| sed -e "s:.*\(auto_bootstrap\:\).*:auto_bootstrap\: false:" \
+	> /tmp/cassandra.yaml.new
+	sudo mv /tmp/cassandra.yaml.new /etc/cassandra/cassandra.yaml 
+	;;
+status)
+	grep 'auto_bootstrap:' /etc/cassandra/cassandra.yaml  | sed -e 's/[^:]*[^truefalse]*\([truefalse]*\)/\1/'
+	;;
+*)
+	echo "Error: missing argument: status, enable, or disable argument";
+	echo "";
+	echo "Usage: `basename $0` [enable|disable|status]";
+	echo "";
+	;;
+esac

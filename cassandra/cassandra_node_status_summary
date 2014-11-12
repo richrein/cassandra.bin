@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+#
+#
+#
+
+cassandra_log_file=/var/log/cassandra/system.log
+cassandra_output_file=/var/log/cassandra/output.log
+
+export thisCommand=`basename $0`
+
+trace_cmd () {
+	cmd="$1"; shift
+	echo "$cmd" "$@"
+	"$cmd" "$@"
+}
+
+RunningStatusText=`sudo service cassandra status 2>/dev/null | grep -v 'xss' | sed -e 's/ \* //'`
+echo $RunningStatusText
+if [ x"$RunningStatusText" == x"Cassandra is running" ]; then isRunning=true; else isRunning=false; fi
+
+#
+# Memory Check
+#
+memory_total_physical=`memory_total_physical`
+if [ x$memory_total_physical == x ]; then
+	echo Error: memory_total_physical failed; exit 1
+fi
+
+memory_recommended=32000000000
+if [ `echo "$memory_total_physical < $memory_recommended" | bc` != 0 ]; then
+	printf "Warning: Memory size: %'d too small. Should be: %'d\n" $memory_total_physical $memory_recommended
+else
+	printf "OK: Memory size: %'d\n" $memory_total_physical
+fi
+
+#
+# Path Check
+#
+which nodetool status &>/dev/null
+if [ $? -ne 0 ] ; then echo Error: Cassandra nodetool not in PATH; exit 1; else echo OK: Cassandra commands in PATH; fi
+
+
+#
+# Service Check
+#
+nodetool status >/dev/null 2>&1
+status=$?
+if [ $status != 0 ]; then echo Error: Cassandra server not responding; else echo OK: Cassandra server responding; fi
+
+#
+# Check memory
+# 
+echo Heap:
+sudo grep "Heap size" "$cassandra_log_file" | tail -n 1 
+echo Heap Warnings:
+sudo grep "Heap is[0-9. ]*full" "$cassandra_log_file" | tail -n 10 
+
+if [ $isRunning == false ]; then
+	echo Exit:
+	sudo grep "Service exit" "$cassandra_output_file" | tail -n 1 
+fi

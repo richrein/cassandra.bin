@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ x"$1" = x ]; then echo missing cassandra keyspace name in arg 1; exit 1; fi
+keyspaceName="$1"; shift
+
+( set -x; echo "DESCRIBE KEYSPACE \"$keyspaceName\" ;" | cqlsh )
+echo ''

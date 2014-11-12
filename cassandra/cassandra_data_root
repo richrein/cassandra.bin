@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+#
+# Provice auto location of cassandra here
+# 
+
+CASSANDRA_DATA_ROOT="/var/lib/cassandra"
+echo $CASSANDRA_DATA_ROOT

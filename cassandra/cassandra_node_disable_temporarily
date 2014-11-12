@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Use nodetool to disable Cassandra only on a specific node.
+# from: http://www.jointhegrid.com/highperfcassandra/?cat=10
+
+# There are times when you would like a Cassandra node to stop receiving requests or appear like it is down to outside clients.
+# You may want to use this to disable a node and adjust your log4j properties for more debugging,
+# or your may be running some administrative action like repair or rebuildsstables and you want this action to complete as quickly as possible. 
+# Being able to disable Cassandra without shutting it down completely can be very handy.
+
+# How it works:
+# Gossip is the protocol that Cassandra nodes use to determine which nodes are UP or DOWN.
+# Cassandra nodes gossip to each other and maintain a state of the cluster.
+# By disabling gossip other Cassandra nodes will stop forwarding read and write requests to this node 
+# because they will believe the node is down. Client using thrift will still be able to connect to a node in this state.
+# Disablethrift disables the client port 9160 which prevents clients from connecting to this node. 
+# Typically you will enable both disablethrift and disablegossip together.
+
+trace_cmd=true
+cassandra_nodetool disablegossip "$@"
+cassandra_nodetool disablethrift "$@"
+
+# warning: add disabling streaming and binary protocol

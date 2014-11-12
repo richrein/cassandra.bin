@@ -1,0 +1,24 @@
+
+
+set -x
+cqlsh --cql3 </dev/null
+
+nodetool  ring
+nodetool  tpstats
+nodetool  cfstats
+nodetool  cfhistograms testkeyspace testcf | awk '{print $1 $3 $5}'
+nodetool  compactionstats
+
+
+
+nodetool  ring
+nodetool  cfstats
+nodetool  tpstats
+nodetool  compactionstats
+nodetool  loadbalance
+nodetool  netstats
+nodetool  rangekeysample
+nodetool  gossipinfo
+
+sar -u | tail -5
+

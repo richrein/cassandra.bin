@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+concurrent_writes=128 			# 64, orig 32
+memtable_flush_writers=16
+memtable_flush_queue_size=16
+compaction_throughput_mb_per_sec=64
+
+
+set -e
+set -x
+if [ ! -f /etc/cassandra/cassandra-topology.properties.orig ]; then
+	sudo cp /etc/cassandra/cassandra-topology.properties /etc/cassandra/cassandra-topology.properties.orig
+fi
+
+if [ ! -f /etc/cassandra/cassandra.yaml.orig ]; then
+	sudo cp /etc/cassandra/cassandra.yaml /etc/cassandra/cassandra.yaml.orig
+fi
+
+
+cat /etc/cassandra/cassandra.yaml \
+| sed -e "s:.*\(concurrent_writes\:\).*:concurrent_writes\: $concurrent_writes:" \
+| sed -e "s:.*\(memtable_flush_writers\:\).*:memtable_flush_writers\: $memtable_flush_writers:" \
+| sed -e "s:.*\(memtable_flush_queue_size\:\).*:memtable_flush_queue_size\: $memtable_flush_queue_size:" \
+| sed -e "s:.*\(compaction_throughput_mb_per_sec\:\).*:compaction_throughput_mb_per_sec\: $compaction_throughput_mb_per_sec:" \
+> /tmp/cassandra.yaml.new
+sudo mv /tmp/cassandra.yaml.new /etc/cassandra/cassandra.yaml 
+
+
+cat <</EOF >/dev/null
+272c272,273
+< concurrent_writes: 32
+---
+> concurrent_writes: 64
+293a295
+> memtable_flush_writers: 10
+299c301,302
+< memtable_flush_queue_size: 4
+---
+> memtable_flush_queue_size: 16
+473c476,477
+< compaction_throughput_mb_per_sec: 16
+---
+> compaction_throughput_mb_per_sec: 64
+568c572
+< endpoint_snitch: Ec2Snitch
+---
+> endpoint_snitch: PropertyFileSnitch
+/EOF

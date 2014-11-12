@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+set -x
+echo select '*' FROM  \"Keyspace1\".\"Standard1\" LIMIT 3\; | cqlsh

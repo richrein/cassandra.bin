@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+
+case $(uname) in
+Darwin*) OS_FLAVOR='osx';;
+*) OS=OS_FLAVOR='linux';;
+esac
+
+echo $OS_FLAVOR
