@@ -3,20 +3,5 @@
 set -e
 set -x
 echo DROP KEYSPACE \"Keyspace1\"\; | cqlsh # >/dev/null 2>&1
-#sleep 2
-#echo "create keyspace 'Keyspace1' with replication = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 } ; "       | cqlsh
-#echo "CREATE KEYSPACE "Keyspace1" WITH replication = {'class': 'NetworkTopologyStrategy', 'DC1' : 1, 'DC2' : 3} AND durable_writes = 'true' ;" | cqlsh
 sleep 2
-# cassandra-stress  --replication-factor 3  --threads 1 --columns 1 
 cassandra-stress -d 127.0.0.1 --enable-cql --use-prepared-statements --replication-factor 3 --num-keys 10 --keys-per-call 2 --threads 1 --columns 10 --num-different-keys 20
-# cassandra-stress -d 127.0.0.1 --enable-cql --use-prepared-statements --replication-factor 1 --num-keys 10 --keys-per-call 2 --threads 1 --columns 2 --num-different-keys 10
-# cassandra-stress -d 127.0.0.1 --enable-cql --use-prepared-statements --replication-factor 1 --num-keys 10 --keys-per-call 2 --threads 1 --columns 2 --num-different-keys 10
-# cassandra-stress -d 127.0.0.1 --enable-cql --use-prepared-statements --replication-factor 3 --num-keys 4400000 --keys-per-call 7500 --threads 20 --columns 1440 --num-different-keys 440000
-# time cassandra-stress -d 127.0.0.1 --enable-cql --use-prepared-statements --replication-factor 3 --num-keys 440000000 --keys-per-call 75000 --threads 500 --columns 1 --num-different-keys 440000 -i 60
-### time cassandra-stress -d 127.0.0.1 --enable-cql --use-prepared-statements -R org.apache.cassandra.locator.NetworkTopologyStrategy -O DC1:3 -n 100000 -o read -e LOCAL_QUORUM --num-keys 440000000 --keys-per-call 75000 --threads 500 --columns 1 --num-different-keys 440000 -i 60
-# time cassandra-stress -d 127.0.0.1 --enable-cql --use-prepared-statements -R org.apache.cassandra.locator.NetworkTopologyStrategy -O DC1:3 -e LOCAL_QUORUM --num-keys 440000000 --keys-per-call 75000 --threads 100 --columns 1 --num-different-keys 440000 -i 60
-### * Write to the cluster with a network topology and consistency level of 4:
-### $ cassandra-stress -R org.apache.cassandra.locator.NetworkTopologyStrategy -O datacenter1:4 -n 100000 -e QUORUM
-###
-### * Read from the cluster to make sure it's available:
-### $ cassandra-stress -R org.apache.cassandra.locator.NetworkTopologyStrategy -O datacenter1:4 -n 100000 -o read -e QUORUM

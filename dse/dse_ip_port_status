@@ -2,7 +2,7 @@
 
 OS_FLAVOR=$(os_flavor)
 case $OS_FLAVOR in
-	osx) 	break;;
+	osx) 	;;
 	*) echo $OS_FLAVOR not supported; exit 1;;
 esac
 
@@ -19,10 +19,7 @@ showPort () {
 	portDescription="$@"; shift
 
 	portCount_prior=$portCount
-	case $OS_FLAVOR in
-		osx) 	portCount=$(lsof -nPR -i :$portNumber | sed -e '1d' | wc -l | sed -e 's/ //g' );;
-		*) echo $OS_FLAVOR not supported; exit 1;;
-	esac
+	portCount=$(ip_port_process_count $portNumber)
 
 	if [ $portCount_prior != 0 ]; then
 		showSeparator;
@@ -34,7 +31,7 @@ showPort () {
 
 	printf "Port %5s %s - %s\n" "$portNumber" "($portCount)" "$portDescription"
 	if [ $portCount != 0 ]; then 
-		lsof -nPR -i :$portNumber;
+		ip_port_process_list $portNumber;
 	fi
 }
 
@@ -83,5 +80,3 @@ showPort 10000	Hadoop Hive\/Shark server port \(hive-site.xml\)
 showPort 50030	Hadoop Job Tracker website port
 showPort 50060	Hadoop Task Tracker website port
 
-# netstat -in | grep '127.0.0.*'
-# lsof -i :9042

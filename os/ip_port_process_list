@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+#
+# List processes that have the port open
+#
+
+OS_FLAVOR=$(os_flavor)
+
+if [ x$1 = x ]; then echo "`basename $0`: Error - Missing port arg"; exit; fi
+portNumber="$1"; shift
+
+case $OS_FLAVOR in
+	osx)	lsof -nPR -i :$portNumber ;;
+	*) echo $OS_FLAVOR not supported; exit 1;;
+esac

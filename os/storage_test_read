@@ -28,3 +28,22 @@ fi
 
 set -x
 time sudo dd of=/dev/null if="$fileName" bs=102400000 count=1500 # iflag=direct
+
+
+# Todo:
+# From: http://askubuntu.com/questions/122857/can-i-copy-large-files-faster-without-using-the-file-cache
+#
+# There is the nocache utility, which can prepended to a command like ionice and nice. 
+# It works by preloading a library which adds posix_fadvise with the POSIX_FADV_DONTNEED flag to any open calls.
+#
+# In simple terms, it advises the kernel that caching is not needed for that particular file; the kernel will then 
+# normally not cache the file. See here for the technical details.
+#
+# It does wonders for any huge copy jobs, e. g. if you want to backup a multi terabyte disk in the background
+#  with the least possible impact on you running system, you can do something along
+#  > nice -n19 ionice -c3 nocache cp -a /vol /vol2.
+#
+# A package will be available in Ubuntu 13.10 and up. 
+# If you are on a previous release you can either install the 13.10 package or opt for this 12.04 backport by François Marier.
+# See: https://launchpad.net/ubuntu/+source/nocache
+# And: https://launchpad.net/~fmarier/+archive/ubuntu/ppa/+index?field.series_filter=precise&batch=75&memo=75&start=75
