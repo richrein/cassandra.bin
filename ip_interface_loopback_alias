@@ -1,0 +1,11 @@
+#!/usr/bin/env sudo bash
+
+if [ x$1 = x ]; then echo "`basename $0`: Error. Missing IP interface alias arg (example: 127.0.0.5)"; exit; fi
+ipAddress="$1"; shift
+
+if [ x$1 = x ]; then echo "`basename $0`: Error. Missing IP alias state arg (example: up)"; exit; fi
+ipState="$1"; shift
+
+set -x
+ifconfig lo0 alias $ipAddress $ipState
+

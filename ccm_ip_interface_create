@@ -1,0 +1,6 @@
+#!/usr/bin/env sudo bash
+
+for ((i=2; i <= 9 ; i++)); do
+  ip_interface_loopback_alias 127.0.0.$i up
+done
+

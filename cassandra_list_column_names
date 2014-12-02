@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo 'select keyspace_name, columnfamily_name ,column_name from system.schema_columns;' | cqlsh # | tail --lines +4
