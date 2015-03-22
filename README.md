@@ -1,5 +1,4 @@
 # cassandra.bin
----
 <br>
 ### Installing
 
