@@ -4,7 +4,7 @@
 ### Installing
 
 
-1. Download the git repo with:
+<sp>1. Download the git repo with:
 <pre>
     > git clone https://github.com/richrein/cassandra.bin.git
 </pre>
