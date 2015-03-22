@@ -3,7 +3,7 @@ cassandra.bin
 
 
 Installing
-===
+----------
 
 ```
 Download the git repo with:
