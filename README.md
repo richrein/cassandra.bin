@@ -1,6 +1,9 @@
 # cassandra.bin
-<br>
-### Installing
+## Overview
+Provides example scripts to manage cassandra.
+
+
+## Installing
 
 
 <sp>1. Download the git repo with:
