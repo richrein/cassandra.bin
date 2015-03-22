@@ -13,7 +13,7 @@ Provides example scripts to manage cassandra.
 
 <br>2. Edit ~/.bashrc with vim, nano, or other editor and the following line near the end of the file:
 <pre>
-    export PATH="$PATH:$HOME/Dropbox/bin/cassandra.bin"
+    export PATH="$PATH:\`pwd\`/cassandra.bin"
 </pre>
 
 <br>
