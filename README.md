@@ -14,7 +14,7 @@ Provides example scripts to manage cassandra.
 
 <br>2. Add the following line near the end of the file:
 <pre>
-    if [ -d `pwd`/cassandra.bin ] ; then (echo export PATH="\$PATH:\`pwd\`/cassandra.bin\" >> ~/.bashrc); else echo Error: Not in parent folder; fi
+    if [ -d `pwd`/cassandra.bin ] ; then (echo export PATH="\$PATH:`pwd`/cassandra.bin\" >> ~/.bashrc); else echo Error: Not in parent folder; fi
 </pre>
 
 <br>3. Source .bashrc
