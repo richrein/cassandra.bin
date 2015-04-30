@@ -9,8 +9,8 @@
 ###
 ### global methods
 ###
-curl -s icanhazip.com
-# curl -s 'http://checkip.dyndns.org' | sed 's/.*Current IP Address: \([0-9\.]*\).*/\1/g'
+#curl -s icanhazip.com
+curl -s 'http://checkip.dyndns.org' | sed 's/.*Current IP Address: \([0-9\.]*\).*/\1/g'
 
 ###
 ### EC2 only methods
