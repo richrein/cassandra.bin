@@ -1,0 +1,10 @@
+
+printf "Description of changes\n(blank line to end)\n"
+description=""
+while read line ; do
+    if [ x"$line" == x ]; then break; fi;
+    if [ x"$description" = x ]; then description="$line"; else description="$description"$'\n'"$line"; fi;
+done
+
+set -x
+git pull && git add -u && git commit -m "$description" && git push
