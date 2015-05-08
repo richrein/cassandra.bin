@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+OS_FLAVOR=""
 
-case $(uname) in
-Darwin*) OS_FLAVOR='osx';;
-*) OS=OS_FLAVOR='linux';;
+case $(uname -a) in
+*Darwin*) export OS_FLAVOR='osx';;
+*Ubuntu*) export OS_FLAVOR='ubuntu';;
+*) 	  export OS_FLAVOR='linux';;
 esac
 
 echo $OS_FLAVOR
