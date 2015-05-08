@@ -11,5 +11,6 @@ OS_FLAVOR=$(os_flavor)
 
 case $OS_FLAVOR in
 	osx)	lsof -nPR -i :$portNumber | sed -e '1d' | wc -l | sed -e 's/ //g' ;;
+	ubuntu)	lsof -nPR -i :$portNumber | sed -e '1d' | wc -l | sed -e 's/ //g' ;;
 	*) echo $OS_FLAVOR not supported; exit 1;;
 esac

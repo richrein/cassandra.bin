@@ -11,5 +11,6 @@ portNumber="$1"; shift
 
 case $OS_FLAVOR in
 	osx)	lsof -nPR -i :$portNumber ;;
+	ubuntu)	lsof -nPR -i :$portNumber ;;
 	*) echo $OS_FLAVOR not supported; exit 1;;
 esac
