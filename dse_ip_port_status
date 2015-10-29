@@ -78,6 +78,9 @@ showPort 8012	Hadoop Job Tracker client port
 showPort 9000	Hadoop NameNode port
 showPort 9290	Hadoop Job Tracker OpsCenter Thrift port
 showPort 10000	Hadoop Hive\/Shark server port \(hive-site.xml\)
+showPort 10001	Hive Spark SQL Thrift Server 
 showPort 50030	Hadoop Job Tracker website port
 showPort 50060	Hadoop Task Tracker website port
+
+showSection Hive
 
