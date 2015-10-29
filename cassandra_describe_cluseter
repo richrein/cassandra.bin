@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -x
+nodetool describecluster
+
+#
+# example
+#
+# Cluster Information:
+# 	Name: Test Cluster
+# 	Snitch: org.apache.cassandra.locator.DynamicEndpointSnitch
+# 	Partitioner: org.apache.cassandra.dht.Murmur3Partitioner
+# 	Schema versions:
+# 		a40a2224-1b6f-3fb7-94da-2586eaf949d3: [127.0.0.1]
