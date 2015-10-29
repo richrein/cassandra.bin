@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ "x$1" == "x" ]; then
+	echo `basename $0` argmument 1 needs to be directory name
+	exit 99
+fi
+DIRNAME="$1"
+if [ ! -d "$DIRNAME" ]; then
+	echo `basename $0` argmument 1 needs to be directory name
+	exit 99
+fi
+
+
+find "$DIRNAME" -type f -name '*-Data.db' | sed -e 's/.*-\(..\)-[0-9]*-Data.db$/\1/'  | sort | uniq -c
