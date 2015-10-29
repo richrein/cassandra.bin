@@ -1,0 +1,4 @@
+
+
+printf 'Nodes up '
+nodetool status | grep UN | wc -l
