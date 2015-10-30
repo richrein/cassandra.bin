@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sudo bash
 
 if [ "x$1" == "x" ]; then
 	echo `basename $0` argmument 1 needs to be directory name
@@ -10,5 +10,9 @@ if [ ! -d "$DIRNAME" ]; then
 	exit 99
 fi
 
-
-find "$DIRNAME" -type f -name '*-Data.db' | sed -e 's/.*-\(..\)-[0-9]*-Data.db$/\1/'  | sort | uniq -c
+printf 'sstable\n'
+printf '%-5s %-5s\n' count version
+find "$DIRNAME" -type f -name '*-Data.db' | sed -e 's/.*-\(..\)-[0-9]*-Data.db$/\1/'  | sort | uniq -c | while read count version
+do
+	printf '%5d %-5s\n' $count $version
+done 
