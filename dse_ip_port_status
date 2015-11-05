@@ -82,5 +82,3 @@ showPort 10001	Hive Spark SQL Thrift Server
 showPort 50030	Hadoop Job Tracker website port
 showPort 50060	Hadoop Task Tracker website port
 
-showSection Hive
-

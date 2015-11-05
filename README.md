@@ -2,6 +2,14 @@
 ## Overview
 Provides example scripts to manage cassandra.
 
+This repo contains some basic script templates for using Cassandra and DSE (DataStax Enterprise). The contents are provided using the Apache 2.0 license with allows distribution without liabilities to either party.
+
+Script templates here assist with migrattion, operation, and other aspects of using Cassandra and DSE. It is not a complete list, but it is provided to explain how to get important information out of cassandra, DSE, and the local OS.
+
+I test it first on the Mac OSx. Then as required, the script templates are tested on variou versions of Linux.
+
+Rich Rein
+
 
 ## Installing
 
@@ -21,3 +29,6 @@ Provides example scripts to manage cassandra.
 <pre>
     > source ~/.bashrc
 </pre>
+
+
+
