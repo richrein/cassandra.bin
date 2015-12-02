@@ -1,0 +1,19 @@
+#!/usr/bin/env sudo bash
+
+
+if [ x"$1" == x ]; then
+	dir=$(pwd)
+else
+	dir="$1"; shift
+	if [ ! -d "$dir" ]; then
+		echo Error: "$dir" is not a directory; exit 99;
+	fi
+fi
+
+
+#dir='/Users/richrein/dse/data'
+printf "%10s   %s\n" "sstables" "Table directory" 
+for tabledir in "$dir"/*/* ; do
+	printf "%10d   %s\n" $(ls -f $tabledir/*Data.db 2>&- | wc -l) $tabledir 
+done
+
