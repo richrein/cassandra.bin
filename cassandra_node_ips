@@ -11,7 +11,7 @@ nodetool status \
 | grep '[0-9]' \
 | (printf "$rowFormat" "Internal IP" "External IP"; 
 	while read localIp ; do 
-		printf "$rowFormat" $localIp `ssh ubuntu@$localIp curl -s icanhazip.com </dev/null`
+		printf "$rowFormat" $localIp `ip_address_public $localIp</dev/null`
 	done
 ) | col -b
 
