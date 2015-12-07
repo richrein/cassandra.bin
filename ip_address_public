@@ -5,6 +5,10 @@
 ###
 ### Rich Rein
 ###
+###
+### TODO: Add remote node lookup if local ip given as arg:
+###    ssh ubuntu@$localIp curl -s 'http://checkip.dyndns.org' | sed 's/.*Current IP Address: \([0-9\.]*\).*/\1/g'
+###
 
 ###
 ### global methods
