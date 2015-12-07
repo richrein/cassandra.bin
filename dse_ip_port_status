@@ -3,6 +3,7 @@
 OS_FLAVOR=$(os_flavor)
 case $OS_FLAVOR in
 	osx) 	;;
+        ubuntu) ;;
 	*) echo $OS_FLAVOR not supported; exit 1;;
 esac
 
