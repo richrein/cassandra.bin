@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+cassandra_conf_dir=/etc/dse/cassandra
+date=$(date +%F)
+cassandraenv_backup="cassandra-env.sh.$date"
+cassandrayaml_backup="cassandra.yaml.$date"
+
+cd "$cassandra_conf_dir"
+
+#
+# Create backup files if they don't exist
+#
+if [ ! -f "$cassandraenv_backup" ] ; then
+	( set -x
+		cp cassandra-env.sh "$cassandraenv_backup"
+		chown cassandra:cassandra "$cassandraenv_backup"
+	)
+fi
+
+if [ ! -f "$cassandrayaml_backup" ] ; then
+	( set -x
+		cp cassandra.yaml "$cassandrayaml_backup"
+		chown cassandra:cassandra "$cassandrayaml_backup"
+	)
+fi
+
+#
+# Generate cassandra-env.sh.new
+#
+MAX_HEAP_SIZE="50G"
+HEAP_NEWSIZE="8G"
+
+# Change values and uncomment if needed
+cat cassandra-env.sh \
+| sed -e "s:^[#]*\(MAX_HEAP_SIZE\=\).*:MAX_HEAP_SIZE\=\"$MAX_HEAP_SIZE\":" \
+| sed -e "s:^[#]*\(HEAP_NEWSIZE\=\).*:HEAP_NEWSIZE\=\"$HEAP_NEWSIZE\":" \
+> cassandra-env.sh.new
+(set -x; chown cassandra:cassandra cassandra-env.sh.new)
+(set -x; diff cassandra-env.sh cassandra-env.sh.new)
+
+
+#
+# Generate cassandra-env.sh.new
+#
+concurrent_reads=128
+concurrent_writes=256
+memtable_flush_writers=24
+concurrent_compactors=10
+compaction_throughput_mb_per_sec=0
+
+cat cassandra.yaml \
+| sed -e "s:.*\(concurrent_reads\:\).*:concurrent_reads\: $concurrent_reads:" \
+| sed -e "s:.*\(concurrent_writes\:\).*:concurrent_writes\: $concurrent_writes:" \
+| sed -e "s:.*\(memtable_flush_writers\:\).*:memtable_flush_writers\: $memtable_flush_writers:" \
+| sed -e "s:.*\(concurrent_compactors\:\).*:concurrent_compactors\: $concurrent_compactors:" \
+| sed -e "s:.*\(compaction_throughput_mb_per_sec\:\).*:compaction_throughput_mb_per_sec\: $compaction_throughput_mb_per_sec:" \
+> cassandra.yaml.new
+(set -x; chown cassandra:cassandra cassandra.yaml.new)
+(set -x; diff cassandra.yaml cassandra.yaml.new)
+
+cat <</EOF >/dev/null
+/EOF

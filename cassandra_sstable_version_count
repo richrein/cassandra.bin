@@ -1,4 +1,6 @@
-#!/usr/bin/env sudo bash
+#!/bin/bash
+
+##!/usr/bin/env sudo bash
 
 if [ "x$1" == "x" ]; then
 	echo "Error:     " `basename $0`: First argument must be the name of a directory containing Cassandra sstables within.
