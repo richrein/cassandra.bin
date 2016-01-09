@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+for file in "/var/log/datastax-agent/agent.log"
+do
+	if [ -f "$file" ]; then echo "$file"; exit 0; fi
+done
+echo NOTFOUND; exit 99;

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+for file in "/etc/dse/cassandra/cassandra.yaml"
+do
+	if [ -f "$file" ]; then echo "$file"; exit 0; fi
+done
+echo NOTFOUND; exit 99;
