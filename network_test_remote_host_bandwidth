@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+#
+# Simple network bandwidth test
+#
+
+export thisCommand=`basename $0`
+
+if [ x"$1" == x ]; then
+	echo "Error: missing remote user@hostname"
+	echo "Usage: $thisCommand file"
+	exit 1
+else
+	remoteLogin="$1"; shift
+fi
+
+blockSize=102400000
+blockCount=10000
+
+set -x
+ssh "$remoteLogin" dd if=/dev/zero bs=$blockSize count=$blockCount | time dd of=/dev/null bs=$blockSize count=$blockCount
+

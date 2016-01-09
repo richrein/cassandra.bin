@@ -1,3 +1,5 @@
 
 data_dir="/var/lib/cassandra/data"
-while true ; do date ; nodetool compactionstats ; echo '' ; ls -lh $data_dir/*/*/*-tmp-*Data.db ; echo '' ; echo '' ; sleep 55;  done
+#while true ; do date ; nodetool compactionstats ; echo '' ; ls -lh $data_dir/*/*/*-tmp-*Data.db ; echo '' ; echo '' ; sleep 55;  done
+while true ; do date ; nodetool compactionstats ; echo '' ; ls -lh $data_dir/*/*/*-tmp-*Data.db | while read c1 c2 c3 c4 c5 c6 c7 c8 c9; do printf '%8s %s\n' $c5 $c9 ; done  ; echo '' ; echo '' ; sleep 55;  done
+

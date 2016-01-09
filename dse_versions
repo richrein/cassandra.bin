@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+
+cat /var/log/datastax-agent/startup.log|grep version

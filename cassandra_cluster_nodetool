@@ -18,9 +18,9 @@ nodetool status | while read c1 c2 c3 c4 c5 c6 c7 c8; do
 		node_host_id=$c7
 		node_rack=$c8
 
-		prefix=$(printf '%20s   %8s   %-16s   %s\n' $datacenter $node_rack $node_ip $node_status)
+		prefix=$(printf '%10s %6s %16s %2s' $datacenter $node_rack $node_ip $node_status)
 
-		nodetool -h $node_ip "$@" | sed -e "s:\(.*\):$prefix   \1:"
+		nodetool -h $node_ip "$@" | sed -e "s:\(.*\):$prefix   \1:" 
 
 	fi
 
