@@ -8,5 +8,5 @@
 # curl http://169.254.169.254/metadata/v1/InstanceInfo ; echo ''
 # produces
 # {"ID":"_dc1vm0","UD":"1","FD":"1"}
-curl http://169.254.169.254/metadata/v1/InstanceInfo | sed -e 's/.*"FD":"\([^"]*\)".*/\1/'
+curl http://169.254.169.254/metadata/v1/InstanceInfo -s -S | sed -e 's/.*"FD":"\([^"]*\)".*/\1/'
 
