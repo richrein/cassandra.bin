@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+OS_FLAVOR=$(os_flavor)
+case $OS_FLAVOR in
+	osx) 	;;
+	ubuntu) ;;
+     linux) ;;
+	*) echo $OS_FLAVOR not supported; exit 1;;
+esac
+
+if [ x"$1" == x ]; then
+	echo $(basename "$0") Error: Missing date string
+	if [ $OS_FLAVOR == osx ]; then
+		echo 'Example:'
+		echo 'Get current time + 100 days in microseconds'
+		echo "\$ `basename $0` +100d"
+		echo '1462455405000000'
+	else
+		echo 'Examples:'
+		echo 'Get current timestamp + 100 days in microseconds'
+		echo "\$ `basename $0` '100 day'"
+		echo '1462498323000000'
+		echo ''
+		echo 'Get current timestamp + 2 days prior in microseconds'
+		echo "\$ `basename $0` '2 days ago'"
+		echo '1453685542000000'
+		echo ''
+		echo 'Get current timestamp for + 3 months and 1 day later in microseconds'
+		echo "\$ `basename $0` '3 months 1 day'"
+		echo '1461806789000000'
+	fi	
+	exit 99
+fi
+
+if [ $OS_FLAVOR == osx ]; then
+	(set -x; date "-v$*" +%s000000)
+else
+	(set -x; date --date="$*" +%s000000)
+fi
+
+
+# ------------------------------------------------------------
+# Bash - OSx
+# ------------------------------------------------------------
+# Get current time in seconds
+# $ date +%s
+# 1453819003
+
+# Get human readable date given the time in seconds
+# $ date -j -f %s 1462455405 '+%Y-%m-%d %H%M'
+# 2016-05-05 0636
+
+# Get current time in microseconds  (for CQL)
+# $ date +%s000000
+# 1453819003000000
+
+# Get current time + 100 days in microseconds
+# $ date -v+100d +%s000000
+# 1462455405000000
+
+# ------------------------------------------------------------
+# Bash - Gnu Linux
+# ------------------------------------------------------------
+# Get current time in seconds
+# $ date +%s
+# 1453821223
+
+# Get current time in microseconds  (for CQL)
+# $ date +%s000000
+# 1453819003000000
+
+# Get current timestamp + 100 days in microseconds
+# $ date --date='100 day' +%s000000
+# 1462498323000000
+
+# Get current timestamp + 2 days prior in microseconds
+# $ date --date='2 days ago' +%s000000
+# 1453685542000000
+
+# Get current timestamp for + 3 months and 1 day later in microseconds
+# $ date --date='3 months 1 day' +%s000000
+# 1461806789000000
+
+# Get human readable date given the time in seconds
+# $ date -d '1970-01-01 1453819003 sec' '+%Y-%m-%d %H%M'
+# 2016-01-26 1436
+
+# Get current time + 100 days in microseconds
+# $ date --date='100 day' '+%Y-%m-%d %H%M'
+# 2016-05-05 1509
+
+# Get current time + 2 days prior in microseconds
+# $ date --date='2 days ago' '+%Y-%m-%d %H%M'
+# 2016-01-24 1507
+
+# Get current time + 3 months and 1 day later in microseconds
+# $ date --date='3 months 1 day' '+%Y-%m-%d %H%M'
+# 2016-04-27 1508
+
+# Gnu Date - http://ss64.com/bash/date.html 
+
+
