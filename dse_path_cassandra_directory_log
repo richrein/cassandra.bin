@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+for directory in "/var/log/cassandra", "$HOME/dse/logs/cassandra"
+do
+        if [ -d "$directory" ]; then echo "$directory"; exit 0; fi
+done
+echo NOTFOUND; exit 99;
+

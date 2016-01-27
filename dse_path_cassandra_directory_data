@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+for directory in "/mnt/cassandra", "$HOME/dse"
+do
+		directory="$directory/data"
+        if [ -d "$directory" ]; then echo "$directory"; exit 0; fi
+done
+echo NOTFOUND; exit 99;
+
