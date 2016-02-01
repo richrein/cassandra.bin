@@ -10,7 +10,7 @@ node_private_ip=$5
 if [ -n $data_center_name ]; then		data_center_name=`printf '%s' 'data_center_name: ' >&2; read val; echo $val;`; fi
 if [ -n $seed_node_public_ip ]; then	seed_node_public_ip=104.40.22.205; fi
 if [ -n $opscenter_public_ip ]; then 	opscenter_public_ip=40.112.212.167; fi
-if [ -n $node_public_ip ]; then 		node_public_ip=`curl -s 'http://checkip.dyndns.org' | sed 's/.*Current IP Address: \([0-9\.]*\).*/\1/g'`; fi
+if [ -n $node_public_ip ]; then 		node_public_ip=`curl --max-time 50000 --retry 12 --retry-delay 50000 -s 'http://checkip.dyndns.org' | sed 's/.*Current IP Address: \([0-9\.]*\).*/\1/g'`; fi
 if [ -n $node_private_ip ]; then		node_private_ip=`hostname -I`; fi
 
 echo ''
@@ -22,7 +22,7 @@ echo node_private_ip \'$node_private_ip\'
 
 # Determine Fault Domain used to create the Rack name to create rackdc.properties 
 # to allow cassandra to place each of 3 replicas on separate fault domains
-fault_domain=$(curl http://169.254.169.254/metadata/v1/InstanceInfo -s -S | sed -e 's/.*"FD":"\([^"]*\)".*/\1/')
+fault_domain=$(curl --max-time 50000 --retry 12 --retry-delay 50000 http://169.254.169.254/metadata/v1/InstanceInfo -s -S | sed -e 's/.*"FD":"\([^"]*\)".*/\1/')
 if [ ! "$fault_domain" ]; then
 	echo Unable to retrieve Instance Fault Domain from instance metadata server 1>&2
 	exit 99
