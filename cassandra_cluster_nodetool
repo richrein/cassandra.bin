@@ -1,6 +1,6 @@
 
 data_dir="/var/lib/cassandra/data"
-nodetool status | while read c1 c2 c3 c4 c5 c6 c7 c8; do
+nodetool status | grep -v '^Note:' | while read c1 c2 c3 c4 c5 c6 c7 c8; do
 	if [ x"$c1" == x'Datacenter:' ] ; then
 		datacenter="$c2"
 		#echo datacenter $datacenter
@@ -9,9 +9,7 @@ nodetool status | while read c1 c2 c3 c4 c5 c6 c7 c8; do
 		read junk
 		read junk
 	else
-		if [ x"$c1" == x ]; then
-			break;
-		fi
+		if [ x"$c1" == x ]; then break; fi
 		node_status=$c1
 		node_ip=$c2
 		node_num_tokens=$c4
@@ -19,60 +17,54 @@ nodetool status | while read c1 c2 c3 c4 c5 c6 c7 c8; do
 		node_rack=$c8
 
 		prefix=$(printf '%10s %6s %16s %2s' $datacenter $node_rack $node_ip $node_status)
-
 		nodetool -h $node_ip "$@" | sed -e "s:\(.*\):$prefix   \1:" 
 
 	fi
 
 done
-exit
 
-cat <</eof
 # Example
-$ nodetool status
-Datacenter: AERRGNDC
-====================
-Status=Up/Down
-|/ State=Normal/Leaving/Joining/Moving
---  Address        Load       Tokens  Owns    Host ID                               Rack
-UN  173.38.244.15  391.63 GB  256     ?       3bb3758a-99ef-49ca-8bb8-1081a5a52eac  RAC1
-UN  173.38.244.14  389.45 GB  256     ?       5468ea92-75aa-40e2-b87e-c0d4ee92c681  RAC1
-UN  173.38.244.13  370.76 GB  256     ?       6a6d0f79-241d-4d52-98f3-fb17051ac6ae  RAC1
-UN  173.38.244.20  377.15 GB  256     ?       cb19ed5f-9842-44eb-81d4-bfe348c5c8ec  RAC1
-UN  173.38.244.18  371.9 GB   256     ?       88b45b67-01eb-4630-b069-fd0efe8d5332  RAC1
-UN  173.38.244.19  408.45 GB  256     ?       4cbdb83d-070a-4951-9d67-d41f0c1edf7f  RAC1
-UN  173.38.244.16  405.97 GB  256     ?       b95e06cf-d139-463d-a332-74bc42ac71f6  RAC1
-UN  173.38.244.17  387.53 GB  256     ?       0537ee19-5f06-4209-97f7-9190a55ceef0  RAC1
-Datacenter: ALLNRGNDC
-=====================
-Status=Up/Down
-|/ State=Normal/Leaving/Joining/Moving
---  Address        Load       Tokens  Owns    Host ID                               Rack
-UN  173.36.28.138  436.24 GB  256     ?       b4b0fea1-93e7-47e9-9bb9-26c1f6bf7f74  RAC1
-UN  173.36.28.139  408.86 GB  256     ?       58c27747-b27e-43ff-9041-b3116aafa604  RAC1
-UN  173.36.28.137  387.9 GB   256     ?       689a86ed-a9b5-4908-a0f2-c1efac5d0178  RAC1
-UN  173.36.28.142  387.78 GB  256     ?       dcbc89c1-42ba-46d8-882e-d75ddcca3ab4  RAC1
-UN  173.36.28.143  386.75 GB  256     ?       3a879e4a-77a4-4fe3-9857-a6640d77ef52  RAC1
-UN  173.36.28.140  382.07 GB  256     ?       33ee3534-96e6-4f77-a18e-b35855a6e81f  RAC1
-UN  173.36.28.141  414.84 GB  256     ?       dafeb1e1-729e-4278-acaf-968bc543e9b8  RAC1
-UN  173.36.28.144  394.15 GB  256     ?       a6e56e79-8fd1-46a6-b3c8-9d5a97979530  RAC1
-Datacenter: SNGRGNDC
-====================
-Status=Up/Down
-|/ State=Normal/Leaving/Joining/Moving
---  Address        Load       Tokens  Owns    Host ID                               Rack
-UN  173.39.110.33  412.93 GB  256     ?       fb6a02e3-42b7-4ad9-8421-0c2def85e7d8  RAC1
-UN  173.39.110.32  407.54 GB  256     ?       ce4854a1-5455-40c7-8c9a-bc4cf5df3b71  RAC1
-UN  173.39.110.34  398.72 GB  256     ?       8c37eb04-cdf5-4d3c-a727-3f83a23355be  RAC1
-UN  173.39.110.27  391.28 GB  256     ?       d781fcf0-fb1a-4407-abd4-2d9e247fe088  RAC1
-UN  173.39.110.30  429.74 GB  256     ?       d0f0c901-fd98-4178-908b-e6fe17aea685  RAC1
-UN  173.39.110.31  443.79 GB  256     ?       61a3e31a-04f6-4a25-bb63-fa42d356ef4b  RAC1
-UN  173.39.110.28  403.13 GB  256     ?       b347dce9-7e97-43dc-9302-9694c2bbfe95  RAC1
-UN  173.39.110.29  424.6 GB   256     ?       1080d574-f4ae-486f-bf81-64fbb49de6ac  RAC1
+# $ nodetool status
+# Datacenter: AERRGNDC
+# ====================
+# Status=Up/Down
+# |/ State=Normal/Leaving/Joining/Moving
+# --  Address        Load       Tokens  Owns    Host ID                               Rack
+# UN  173.38.244.15  391.63 GB  256     ?       3bb3758a-99ef-49ca-8bb8-1081a5a52eac  RAC1
+# UN  173.38.244.14  389.45 GB  256     ?       5468ea92-75aa-40e2-b87e-c0d4ee92c681  RAC1
+# UN  173.38.244.13  370.76 GB  256     ?       6a6d0f79-241d-4d52-98f3-fb17051ac6ae  RAC1
+# UN  173.38.244.20  377.15 GB  256     ?       cb19ed5f-9842-44eb-81d4-bfe348c5c8ec  RAC1
+# UN  173.38.244.18  371.9 GB   256     ?       88b45b67-01eb-4630-b069-fd0efe8d5332  RAC1
+# UN  173.38.244.19  408.45 GB  256     ?       4cbdb83d-070a-4951-9d67-d41f0c1edf7f  RAC1
+# UN  173.38.244.16  405.97 GB  256     ?       b95e06cf-d139-463d-a332-74bc42ac71f6  RAC1
+# UN  173.38.244.17  387.53 GB  256     ?       0537ee19-5f06-4209-97f7-9190a55ceef0  RAC1
+# Datacenter: ALLNRGNDC
+# =====================
+# Status=Up/Down
+# |/ State=Normal/Leaving/Joining/Moving
+# --  Address        Load       Tokens  Owns    Host ID                               Rack
+# UN  173.36.28.138  436.24 GB  256     ?       b4b0fea1-93e7-47e9-9bb9-26c1f6bf7f74  RAC1
+# UN  173.36.28.139  408.86 GB  256     ?       58c27747-b27e-43ff-9041-b3116aafa604  RAC1
+# UN  173.36.28.137  387.9 GB   256     ?       689a86ed-a9b5-4908-a0f2-c1efac5d0178  RAC1
+# UN  173.36.28.142  387.78 GB  256     ?       dcbc89c1-42ba-46d8-882e-d75ddcca3ab4  RAC1
+# UN  173.36.28.143  386.75 GB  256     ?       3a879e4a-77a4-4fe3-9857-a6640d77ef52  RAC1
+# UN  173.36.28.140  382.07 GB  256     ?       33ee3534-96e6-4f77-a18e-b35855a6e81f  RAC1
+# UN  173.36.28.141  414.84 GB  256     ?       dafeb1e1-729e-4278-acaf-968bc543e9b8  RAC1
+# UN  173.36.28.144  394.15 GB  256     ?       a6e56e79-8fd1-46a6-b3c8-9d5a97979530  RAC1
+# Datacenter: SNGRGNDC
+# ====================
+# Status=Up/Down
+# |/ State=Normal/Leaving/Joining/Moving
+# --  Address        Load       Tokens  Owns    Host ID                               Rack
+# UN  173.39.110.33  412.93 GB  256     ?       fb6a02e3-42b7-4ad9-8421-0c2def85e7d8  RAC1
+# UN  173.39.110.32  407.54 GB  256     ?       ce4854a1-5455-40c7-8c9a-bc4cf5df3b71  RAC1
+# UN  173.39.110.34  398.72 GB  256     ?       8c37eb04-cdf5-4d3c-a727-3f83a23355be  RAC1
+# UN  173.39.110.27  391.28 GB  256     ?       d781fcf0-fb1a-4407-abd4-2d9e247fe088  RAC1
+# UN  173.39.110.30  429.74 GB  256     ?       d0f0c901-fd98-4178-908b-e6fe17aea685  RAC1
+# UN  173.39.110.31  443.79 GB  256     ?       61a3e31a-04f6-4a25-bb63-fa42d356ef4b  RAC1
+# UN  173.39.110.28  403.13 GB  256     ?       b347dce9-7e97-43dc-9302-9694c2bbfe95  RAC1
+# UN  173.39.110.29  424.6 GB   256     ?       1080d574-f4ae-486f-bf81-64fbb49de6ac  RAC1
+# 
+# Note: Non-system keyspaces don't have the same replication settings, effective ownership information is meaningless
 
-Note: Non-system keyspaces don't have the same replication settings, effective ownership information is meaningless
-/eof
 
-
-:
-while true ; do date ; nodetool compactionstats ; echo '' ; ls -lh $data_dir/*/*/*-tmp-*Data.db ; echo '' ; echo '' ; sleep 55;  done
