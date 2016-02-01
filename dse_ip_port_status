@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+#
+# Rich Rein 2015, 2016 Apache 2.0 license
+#
+
+# allow invokation of related scripts in this dir
+scriptdir=`dirname "$BASH_SOURCE"`
+PATH="$scriptdir:$PATH"
+
 OS_FLAVOR=$(os_flavor)
 case $OS_FLAVOR in
 	osx) 	;;
