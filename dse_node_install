@@ -9,6 +9,10 @@ node_private_ip=$5
 
 default_seed_node_public_ip=104.40.22.205
 default_opscenter_public_ip=40.112.212.167
+#Make sure file systems was built
+data_file_directories="/mnt/cassandra/data"
+commitlog_directory="/mnt/cassandra/commitlog"
+saved_caches_directory="/mnt/cassandra/saved_caches"
 
 if [ -n $data_center_name ]; then		data_center_name=`printf '%s' 'data_center_name: ' >&2; read val; echo $val;`; fi
 if [ -n $seed_node_public_ip ]; then	seed_node_public_ip=$default_seed_node_public_ip; fi
@@ -45,7 +49,8 @@ set -x
 #apt-add-repository -y "deb http://repos.azulsystems.com/ubuntu stable main"
 #apt-get -y update
 #apt-get -y install zulu-8
-apt-get -y remove zulu-8
+
+#apt-get -y remove zulu-8
 
 #
 # rpm install
@@ -66,11 +71,6 @@ apt-get -y install mlocate
 apt-get -y install vim-enhanced
 apt-get -y install tree
 apt-get -y install telnet
- 
-echo "Partitioning and formatting all attached data disks"
-bash vm-disk-utils-0.1.sh
-echo "Modifying permissions"
-chmod 777 /mnt
 
 #---download and Install dse
 if [ x"$dse_download_user" == x ]; echo "Error: Missing environment variable dse_download_user needed for downloading DSE". ; exit 99; fi
@@ -148,6 +148,9 @@ if [ ! -f "$limitsconf_backup" ] ; then
 	)
 fi
 
+#
+# Not needed as limits.d is installed with the DSE package
+#
 #cd "$limitd_dir"
 #
 #if [ ! -f "$limitd_backup" ] ; then
@@ -188,11 +191,6 @@ rpc_address=$node_private_ip
 broadcast_rpc_address=$node_public_ip
 endpoint_snitch="GossipingPropertyFileSnitch"
 num_tokens=64
-data_file_directories="/mnt/cassandra/data"
-#     - /var/lib/cassandra/data
-#     - /mnt/cassandra/data
-commitlog_directory="/mnt/cassandra/commitlog"
-saved_caches_directory="/mnt/cassandra/saved_caches"
 
 concurrent_reads=64
 concurrent_writes=64
@@ -205,6 +203,7 @@ phi_convict_threshold=12
 inter_dc_stream_throughput_outbound_megabits_per_sec=0
 write_request_timeout_in_ms=3000
 
+# TODO: Change the "-" substitutions to a  multi-line sed pattern substitution.
 cat cassandra.yaml \
 | sed -e "s:.*\(cluster_name\:\).*:cluster_name\: \'$cluster_name\':" \
 | sed -e "s:\(.*- *seeds\:\).*:\1 \"$seeds\":" \
@@ -304,6 +303,10 @@ cassandra        -      as               unlimited
 (set -x; diff limits.conf limits.conf.new)
 (set -x; mv -f limits.conf.new limits.conf)
 
+
+#
+# Not needed as limits.d is installed with the DSE package
+#
 #cd "$limitd_dir"
 #cat cassandra.conf \
 #| grep -v 'cassandra.*memlock.*' \
