@@ -7,9 +7,12 @@ opscenter_public_ip=$3
 node_public_ip=$4
 node_private_ip=$5
 
+default_seed_node_public_ip=104.40.22.205
+default_opscenter_public_ip=40.112.212.167
+
 if [ -n $data_center_name ]; then		data_center_name=`printf '%s' 'data_center_name: ' >&2; read val; echo $val;`; fi
-if [ -n $seed_node_public_ip ]; then	seed_node_public_ip=104.40.22.205; fi
-if [ -n $opscenter_public_ip ]; then 	opscenter_public_ip=40.112.212.167; fi
+if [ -n $seed_node_public_ip ]; then	seed_node_public_ip=$default_seed_node_public_ip; fi
+if [ -n $opscenter_public_ip ]; then 	opscenter_public_ip=$default_opscenter_public_ip; fi
 if [ -n $node_public_ip ]; then 		node_public_ip=`curl --max-time 50000 --retry 12 --retry-delay 50000 -s 'http://checkip.dyndns.org' | sed 's/.*Current IP Address: \([0-9\.]*\).*/\1/g'`; fi
 if [ -n $node_private_ip ]; then		node_private_ip=`hostname -I`; fi
 
@@ -70,7 +73,10 @@ echo "Modifying permissions"
 chmod 777 /mnt
 
 #---download and Install dse
-echo "deb https://darla.baker_bakewell.me:3fqXYF9aH7LuCrg@debian.datastax.com/enterprise stable main" | sudo tee -a /etc/apt/sources.list.d/datastax.sources.list
+if [ x"$dse_download_user" == x ]; echo "Error: Missing environment variable dse_download_user needed for downloading DSE". ; exit 99; fi
+if [ x"$dse_download_pass" == x ]; echo "Error: Missing environment variable dse_download_pass needed for downloading DSE". ; exit 99; fi
+echo Installing DSE
+echo "deb https://$dse_download_user:$dse_download_pass@debian.datastax.com/enterprise stable main" | sudo tee -a /etc/apt/sources.list.d/datastax.sources.list
 curl -L https://debian.datastax.com/debian/repo_key | sudo apt-key add -
 apt-get -y update
 apt-get -y install dse-full
