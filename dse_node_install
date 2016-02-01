@@ -7,6 +7,7 @@ opscenter_public_ip=$3
 node_public_ip=$4
 node_private_ip=$5
 
+cloud_type=azure # azure or aws
 default_seed_node_public_ip=104.40.22.205
 default_opscenter_public_ip=40.112.212.167
 #Make sure file systems was built
@@ -27,15 +28,29 @@ echo opscenter_public_ip \'$opscenter_public_ip\'
 echo node_public_ip \'$node_public_ip\'
 echo node_private_ip \'$node_private_ip\' 
 
-# Determine Fault Domain used to create the Rack name to create rackdc.properties 
-# to allow cassandra to place each of 3 replicas on separate fault domains
-fault_domain=$(curl --max-time 50000 --retry 12 --retry-delay 50000 http://169.254.169.254/metadata/v1/InstanceInfo -s -S | sed -e 's/.*"FD":"\([^"]*\)".*/\1/')
-if [ ! "$fault_domain" ]; then
-	echo Unable to retrieve Instance Fault Domain from instance metadata server 1>&2
-	exit 99
+#
+# Determine Rack
+#
+if [ $cloud_type == "azure" ]; then
+	# Determine Fault Domain used to create the Rack name to create rackdc.properties 
+	# to allow cassandra to place each of 3 replicas on separate fault domains
+	fault_domain=$(curl --max-time 50000 --retry 12 --retry-delay 50000 http://169.254.169.254/metadata/v1/InstanceInfo -s -S | sed -e 's/.*"FD":"\([^"]*\)".*/\1/')
+	if [ ! "$fault_domain" ]; then
+		echo Unable to retrieve Instance Fault Domain from instance metadata server 1>&2
+		exit 99
+	fi
+	echo Fault Domain: "$fault_domain"
+	rack="FD$fault_domain"
 fi
-echo Fault Domain: "$fault_domain"
-rack="FD$fault_domain"
+if [ $cloud_type == "aws" ]; then
+	availability_zone=$( curl --max-time 50000 --retry 12 --retry-delay 50000 http://169.254.169.254/latest/meta-data/placement/availability-zone -s -S )
+	if [ ! "$availability_zone" ]; then
+		echo Unable to retrieve Instance Availability Zone from instance metadata server 1>&2
+		exit 99
+	fi	
+	echo Availability Zone: "$availability_zone"
+	rack=$(echo $availability_zone | sed -e 's/-/_/g')
+fi
 echo rack: $rack
 echo ""
 
