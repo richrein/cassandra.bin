@@ -82,6 +82,7 @@ echo | update-alternatives --force --config java
 java -version
 
 #--- Install Utilities ---#
+apt-get -y install apt-show-versions
 apt-get -y install mlocate
 apt-get -y install vim-enhanced
 apt-get -y install tree
