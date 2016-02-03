@@ -1,7 +1,18 @@
 #!/bin/bash
 
+if [ x"$1" == x ]; then
+	server_node_ip=127.0.0.1
+	echo No ip in arg1. defaulting to $server_node_ip
+else
+	server_node_ip=$1
+fi
+
 set -e
 set -x
-echo DROP KEYSPACE \"Keyspace1\"\; | cqlsh # >/dev/null 2>&1
+( 
+	echo DROP KEYSPACE \"keyspace1\"\; 
+) | ( set -x; cqlsh $server_node_ip  >/dev/null 2>&1 )
 sleep 2
-cassandra-stress -d 127.0.0.1 --enable-cql --use-prepared-statements --replication-factor 3 --num-keys 10 --keys-per-call 2 --threads 1 --columns 10 --num-different-keys 20
+# cassandra-stress write -d $server_node_ip --enable-cql --use-prepared-statements --replication-factor 3 --num-keys 10 --keys-per-call 2 --threads 1 --columns 10 --num-different-keys 20
+cassandra-stress write n=1000000 cl=one -mode native cql3 -schema keyspace="keyspace1"  -node $server_node_ip
+ 
