@@ -4,62 +4,52 @@
 scriptdir=`dirname "$BASH_SOURCE"`
 PATH="$scriptdir:$PATH"
 
-OS_FLAVOR=$(os_flavor)
-case $OS_FLAVOR in
-	osx) 	;;
-	ubuntu) ;;
-        linux) ;;
-	*) echo $OS_FLAVOR not supported; exit 1;;
-esac
+# Directory to backup
+source_backup_path=/mnt/cassandra
 
-# List of backup paths
+# List of backup destination paths
 declare -A backup_path_list
-
 backup_path_list[0]=/backup1/cassandra
 backup_path_list[1]=/backup2/cassandra
 backup_path_count=${#backup_path_list[@]}
 
-# determine local disk backup to
+# Choose backup destination path by modulo of date since Jan 1 1970
 backup_start=$(date)
 date=$(date +%F)
 epoch_seconds=$(date '+%s')
 epoch_day=$(echo $epoch_seconds '/60/60/24' | bc -q )
 backup_path_number=$(echo $epoch_day "%$backup_path_count" | bc -q )
 backup_path=${backup_path_list[$backup_path_number]}
+backup_log="$backup_path/log.$date"
+backup_path_files="$backup_path/files"
+
+# Check and create directories
 if [ x"$backup_path" == x ]; then echo Error: Missing backup path; exit 254; fi
 if [ ! -d "$backup_path" ]; then echo Error: Backup path is not a directory; exit 253; fi
+if [ ! -d "$backup_path_files" ]; then
+	mkdir  "$backup_path_files"
+	chown cassandra:cassandra "$backup_path_files"
+	chmod 777 "$backup_path_files"
+fi
 
-rm -rf "$backup_path"
-mkdir  "$backup_path"
-chown cassandra:cassandra "$backup_path"
-chmod 777 "$backup_path"
-mkdir  "$backup_path/files"
-chown cassandra:cassandra "$backup_path/files"
-chmod 777 "$backup_path/files"
-(
-	echo backup date $backup_start
-	echo backup_path_count $backup_path_count
-	echo seconds since epoch: $epoch_seconds
-	echo days since epoch: $epoch_day
-	echo backup path number: $backup_path_number
-	echo backup path: "$backup_path"
-) > "$backup_path/log"
+exec >> "$backup_log" 2>&1   # send all output to the log
+echo ''
+echo backup date $backup_start
+echo backup_path_count $backup_path_count
+echo seconds since epoch: $epoch_seconds
+echo days since epoch: $epoch_day
+echo backup path number: $backup_path_number
+echo backup path: "$backup_path"
+if [ ! -d "$source_backup_path" ]; then echo Error: backup path "$source_backup_path" is not accessible; exit -252; fi
+echo ''
 
+# Copy files to backup
 set -e # stop and trigger trap if there is any error
-trap "{ (echo Backup failed: Files backed up $file_count. Started $backup_start. Aborted $(date). 1>>"$backup_path/log" 2>&1); exit 255; }" EXIT
-file_count=0
-while read file_to_backup; do
-	printf '%s - ' $(date '+%F %H:%M:%S') 					1>>"$backup_path/log" 2>&1
-	if [ -d "$file_to_backup" ]; then
-		mkdir -p "$backup_path/files$file_to_backup";			1>>"$backup_path/log" 2>&1
-		chown cassandra:cassandra "$backup_path/files$file_to_backup"
-		chmod 777 "$backup_path/files$file_to_backup"
-	else
-		cp -v -p --parents "$file_to_backup" "$backup_path/files" 	1>>"$backup_path/log" 2>&1
-	fi
-	let file_count=file_count+1 
-done
-
+trap "{ echo Backup failed: Started $backup_start. Aborted $(date). ; exit 255; }" EXIT
+cat > /dev/null 2>&1   #read and discard the directory names
+echo backing "$source_backup_path"  to "$backup_path_files"
+set -x # Verbose
+rsync -avzh --delete "$source_backup_path" "$backup_path_files"
 trap "{ exit 0; }" EXIT
-echo Backup successful. Files backed up $file_count. Started $backup_start. Completed $(date). 1>>"$backup_path/log" 2>&1
+echo Backup successful. Started $backup_start. Completed $(date). 
 exit 0
