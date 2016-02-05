@@ -44,21 +44,12 @@ if [ ! -d "$source_backup_path" ]; then echo Error: backup path "$source_backup_
 echo ''
 
 # Copy files to backup
+set -e # stop and trigger trap if there is any error
+trap "{ echo Backup failed: Started $backup_start. Aborted $(date). ; exit 255; }" EXIT
 cat > /dev/null 2>&1   #read and discard the directory names
 echo backing "$source_backup_path"  to "$backup_path_files"
 set -x # Verbose
-errcode=99
-while true ; do
-	rsync -avzh --delete "$source_backup_path" "$backup_path_files"
-	errcode=$?
-	echo errcode $e
-	if [ $errcode == 24 ]; then
-	    continue;
-	fi
-done
-if [ $errcode == 0 ]; then
-	echo Backup successful. Started $backup_start. Completed $(date). ; exit $errcode
-else
-	echo Backup failed: Started $backup_start. Aborted $(date). ; exit $errcode;
-fi
-
+rsync -avzh --delete "$source_backup_path" "$backup_path_files"
+trap "{ exit 0; }" EXIT
+echo Backup successful. Started $backup_start. Completed $(date). 
+exit 0
