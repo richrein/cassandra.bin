@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 if [ "`uname -a | grep -i ubuntu 2>/dev/null`x" == x ] ; then
 	# Mac OSx
 	# lo0                             0xff000000                        127.0.0.1        ::1
@@ -13,6 +14,9 @@ if [ "`uname -a | grep -i ubuntu 2>/dev/null`x" == x ] ; then
 	done 
 else
 	# Ubuntu
-	ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
+	ip_address=`echo $(hostname -I)`
+	echo $ip_address
+	# else:  ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'
 fi
+
 
