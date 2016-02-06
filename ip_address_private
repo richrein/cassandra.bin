@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# allow invokation of related scripts in this dir
+scriptdir=`dirname "$BASH_SOURCE"`
+PATH="$scriptdir:$PATH"
 
 if [ "`uname -a | grep -i ubuntu 2>/dev/null`x" == x ] ; then
 	# Mac OSx
