@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+#
+# datastaxagent_backup_local_disk
+#
+# Script to recursively backup the cassandra data directory.
+# Uses rsync to remove old files and copy only new files.
+# License - Apache 2.0 
+#
+
+# allow invokation of related scripts in this dir
+scriptdir=`dirname "$BASH_SOURCE"`
+PATH="$scriptdir:$PATH"
+
+datastax_backup_script_dir=/usr/share/datastax-agent/bin/backup-scripts
+
+set -x -e
+git pull
+cp datastaxagent_backup_local_disk "$datastax_backup_script_dir"/datastaxagent_backup_local_disk
+chown cassandra:cassandra "$datastax_backup_script_dir"/datastaxagent_backup_local_disk
+chmod 755 "$datastax_backup_script_dir"/datastaxagent_backup_local_disk
+ll "$datastax_backup_script_dir"
