@@ -83,8 +83,8 @@ while true ; do
 	# 35     Timeout waiting for daemon connection
 	echo errcode $errcode
 	case $errcode in
-        23) break; ;;
-        24) continue; ;;
+        23) errcode=0; break; ;;
+        24) errcode=0; break; ;;
         *)  break; ;;
 	esac
 done
