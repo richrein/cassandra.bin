@@ -32,8 +32,8 @@ backup_log="$backup_path/log.$date"
 backup_path_files="$backup_path/files"
 
 # Check and create directories
-if [ x"$backup_path" == x ]; then echo Error: Missing backup path; exit 254; fi
-if [ ! -d "$backup_path" ]; then echo Error: Backup path is not a directory; exit 253; fi
+if [ x"$backup_path" == x ]; then echo Error: Missing backup path "$backup_path" ; exit 254; fi
+if [ ! -d "$backup_path" ]; then echo Error: Backup path, "$backup_path", is not a directory; exit 253; fi
 if [ ! -d "$backup_path_files" ]; then
 	mkdir  "$backup_path_files"
 	chown cassandra:cassandra "$backup_path_files"
