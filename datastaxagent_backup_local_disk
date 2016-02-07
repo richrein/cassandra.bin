@@ -56,38 +56,32 @@ cat > /dev/null 2>&1   #read and discard the directory names
 echo backing "$source_backup_path"  to "$backup_path_files"
 set -x # Verbose
 errcode=99
-while true ; do
-	rsync -avzh --delete "$source_backup_path" "$backup_path_files"
-	errcode=$?
-	#  0     Success
-	#  1     Syntax or usage error
-	#  2     Protocol incompatibility
-	#  3     Errors selecting input/output files, dirs
-	#  4     Requested action not supported: an attempt was made to manipulate 64-bit
-	#        files on a platform that cannot support them; or an option was specified
-	#        that is supported by the client and not by the server.
-	#  5     Error starting client-server protocol
-	#  6     Daemon unable to append to log-file
-	# 10     Error in socket I/O
-	# 11     Error in file I/O
-	# 12     Error in rsync protocol data stream
-	# 13     Errors with program diagnostics
-	# 14     Error in IPC code
-	# 20     Received SIGUSR1 or SIGINT
-	# 21     Some error returned by waitpid()
-	# 22     Error allocating core memory buffers
-	# 23     Partial transfer due to error
-	# 24     Partial transfer due to vanished source files
-	# 25     The --max-delete limit stopped deletions
-	# 30     Timeout in data send/receive
-	# 35     Timeout waiting for daemon connection
-	echo errcode $errcode
-	case $errcode in
-        23) errcode=0; break; ;;
-        24) errcode=0; break; ;;
-        *)  break; ;;
-	esac
-done
+rsync -avzh --delete "$source_backup_path" "$backup_path_files"
+errcode=$?
+echo errcode $errcode
+case $errcode in
+	 0) echo     Success; ;;
+	 1) echo     Syntax or usage error; ;;
+	 2) echo     Protocol incompatibility; ;;
+	 3) echo     Errors selecting input/output files\, dirs ;;
+	 4) echo     Requested action not supported: an attempt was made to manipulate 64-bit files on a platform that cannot support them or an option was specified that is supported by the client and not by the server.; ;;
+	 5) echo     Error starting client-server protocol; ;;
+	 6) echo     Daemon unable to append to log-file; ;;
+	10) echo     Error in socket I/O; ;;
+	11) echo     Error in file I/O; ;;
+	12) echo     Error in rsync protocol data stream; ;;
+	13) echo     Errors with program diagnostics; ;;
+	14) echo     Error in IPC code; ;;
+	20) echo     Received SIGUSR1 or SIGINT; ;;
+	21) echo     Some error returned by waitpid\(\); ;;
+	22) echo     Error allocating core memory buffers; ;;
+	23) echo     Partial transfer due to error; errcode=0; ;;
+	24) echo     Partial transfer due to vanished source files; errcode=0; ;;
+	25) echo     The --max-delete limit stopped deletions; ;;
+	30) echo     Timeout in data send/receive; ;;
+	35) echo     Timeout waiting for daemon connection; ;;
+	*) echo unknown status; ;;
+esac
 if [ $errcode == 0 ]; then
 	echo Backup successful. Started $backup_start. Completed $(date). ; exit $errcode
 else
