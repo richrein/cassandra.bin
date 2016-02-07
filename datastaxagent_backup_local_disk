@@ -54,11 +54,10 @@ echo ''
 # Copy files to backup
 cat > /dev/null 2>&1   #read and discard the directory names
 echo backing "$source_backup_path"  to "$backup_path_files"
-set -x # Verbose
 errcode=99
 rsync -avzh --delete "$source_backup_path" "$backup_path_files"
 errcode=$?
-echo errcode $errcode
+printf '%s %s - ' errcode $errcode
 case $errcode in
 	 0) echo     Success; ;;
 	 1) echo     Syntax or usage error; ;;
