@@ -216,7 +216,7 @@ compaction_throughput_mb_per_sec=0
 commitlog_segment_size_in_mb=64
 compaction_throughput_mb_per_sec=100
 phi_convict_threshold=12
-inter_dc_stream_throughput_outbound_megabits_per_sec=0
+inter_dc_stream_throughput_outbound_megabits_per_sec=100
 write_request_timeout_in_ms=3000
 
 # TODO: Change the "-" substitutions to a  multi-line sed pattern substitution.
