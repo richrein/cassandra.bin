@@ -15,7 +15,7 @@ PATH="$scriptdir:$PATH"
 datastax_backup_script_dir=/usr/share/datastax-agent/bin/backup-scripts
 
 set -x -e
-git pull
+# git pull # Update repo if needed
 cp datastaxagent_backup_local_disk "$datastax_backup_script_dir"/datastaxagent_backup_local_disk
 chown cassandra:cassandra "$datastax_backup_script_dir"/datastaxagent_backup_local_disk
 chmod 755 "$datastax_backup_script_dir"/datastaxagent_backup_local_disk
