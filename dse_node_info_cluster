@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+address=$(ip_address_public)
+cluster_name=$(cqlsh $address --no-color -e 'SELECT cluster_name FROM system.local LIMIT 1;' | grep -v '(.*rows.*)' | grep '[a-zA-Z]' | tail -n 1;)
+cluster_name=$(echo $cluster_name) # strip spaces
+echo "$cluster_name"
