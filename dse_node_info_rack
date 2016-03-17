@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-address=$(ip_address_public)
+address=$(ip_address_private)
 stringvalue=$(cqlsh $address --no-color -e 'SELECT rack FROM system.local LIMIT 1;' | grep -v '(.*rows.*)' | grep '[a-zA-Z]' | tail -n 1;)
 stringvalue=$(echo $stringvalue) # strip spaces
 echo "$stringvalue"
