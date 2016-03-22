@@ -58,6 +58,15 @@ showSection () {
 
 }
 
+showProcesses () {
+
+	process_ids=$( for portNumber in "$@"
+	do
+		ip_port_process_list $portNumber;
+	done | grep -v '^COMMAND[	 ]*PID' | sed -e 's/^[^ 	]*[ 	]*\([0-9]*\).*/\1/' | sort -u -g
+	)
+	ps -l -p $process_ids | cat
+}
 
 
 showSection	OpsCenter
@@ -92,3 +101,5 @@ showPort 10001	Hive Spark SQL Thrift Server
 showPort 50030	Hadoop Job Tracker website port
 showPort 50060	Hadoop Task Tracker website port
 
+showSection	Processes
+showProcesses 8888 50031 61620   9042 9160 7000 7001 7199   7077 4040 7080 7081   8983 8984   8012 9000 9290 10000 10001 50030 50060
