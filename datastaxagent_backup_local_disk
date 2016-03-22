@@ -8,6 +8,11 @@
 # License - Apache 2.0 
 #
 
+#
+# TODO - rsync -e ssh for security. Courtesy Matt Atwater
+# TODO - don't backup the live table folder then remove the "errcode=0; ;;" 2 uses below.
+#
+
 # allow invokation of related scripts in this dir
 scriptdir=`dirname "$BASH_SOURCE"`
 PATH="$scriptdir:$PATH"
@@ -53,6 +58,7 @@ echo ''
 
 # Copy files to backup
 cat > /dev/null 2>&1   #read and discard the directory names
+
 echo backing "$source_backup_path"  to "$backup_path_files"
 errcode=99
 rsync -avzhH --delete "$source_backup_path" "$backup_path_files"
