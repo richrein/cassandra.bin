@@ -1,0 +1,4 @@
+
+
+set -x
+sudo find /var /etc /home /root -type f \( -name '*.yaml' -o -name '*-env.sh' -o -name '*rc' -o -name '.profile' \) -print 2>/dev/null
