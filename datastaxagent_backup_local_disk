@@ -12,6 +12,21 @@
 # TODO - rsync -e ssh for security. Courtesy Matt Atwater
 # TODO - don't backup the live table folder then remove the "errcode=0; ;;" 2 uses below.
 #
+# Planned change
+# Compactions and write path continuously change the files to be rsynced. Rsync detects this and after completing the backup, returns errors which I replace with a 0. See
+# 
+# 	23) echo     Partial transfer due to error; errcode=0; ;;
+# 	24) echo     Partial transfer due to vanished source files; errcode=0; ;;
+#
+# The script was always intended to be extended to backup only the snapshot directories.
+# The change would look like:
+#
+#       rsync -avzhH --delete */snapshot "$backup_path"
+# and 
+#
+#	23) echo     Partial transfer due to error; ;;
+#	24) echo     Partial transfer due to vanished source files;  ;;
+#
 
 # allow invokation of related scripts in this dir
 scriptdir=`dirname "$BASH_SOURCE"`
