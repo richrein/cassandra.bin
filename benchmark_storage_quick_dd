@@ -7,7 +7,7 @@
 
 # test should be big enough to flood the buffering of the system and use the direct io flag if you dd supports ig
 BLOCKSIZE=10240000
-BLOCKCOUNT=1500
+BLOCKCOUNT=150
 SUDO=sudo
 
 export thisCommand=`basename $0`
@@ -21,14 +21,18 @@ else
 	if [ ! -d "$dirName" ]; then echo "No such dir: $dirName"; exit 1; fi
 fi
 
-
 trap "$SUDO rm -f $dirName/loadtest.removeme" EXIT
-echo ''
-echo Write test
-time $SUDO dd if=/dev/zero of="$dirName/loadtest.removeme" bs=$BLOCKSIZE count=$BLOCKCOUNT # oflag=direct # always use  direct io is supported by your dd
-echo ''
-echo Read test
-time $SUDO dd if="$dirName/loadtest.removeme" of=/dev/zero bs=$BLOCKSIZE count=$BLOCKCOUNT # oflag=direct # always use  direct io is supported by your dd
+
+set -x
+
+:
+: Write test
+:
+time $SUDO dd if=/dev/zero of="$dirName/loadtest.removeme" bs=$BLOCKSIZE count=$BLOCKCOUNT iflag=fullblock oflag=direct # always use  direct io is supported by your dd
+:
+: Read test
+:
+time $SUDO dd if="$dirName/loadtest.removeme" bs=$BLOCKSIZE count=$BLOCKCOUNT iflag=fullblock iflag=direct >&- # always use  direct io is supported by your dd
 
 
 # Todo:
