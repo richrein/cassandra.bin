@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+#
+# Trivial cassandra write and read test.
+#
+ REQUESTCOUNT=1000000
+#REQUESTCOUNT=10000000
+THREADS=200
+KEYSPACE="test_sanity"
+CONSISTENCY=LOCAL_QUORUM
+# user=cassandra
+# password=cassandra 
+# file=write_$NOW.log
+#
+# For other suggestions, See: https://docs.datastax.com/en/cassandra_win/3.x/cassandra/tools/toolsCStress.html
+#
+
+export thisCommand=`basename $0`
+
+if [ x"$1" == x ]; then
+	echo "Error: missing directory name"
+	echo "Usage: $thisCommand 20.39.21.99"
+	exit 1
+else
+	NODES="$1"   # change for your cluster. Can be IPs and/or comma seperated
+	shift
+fi
+
+set -x
+
+:
+: Write test
+:
+cassandra-stress write n=$REQUESTCOUNT cl=$CONSISTENCY -schema keyspace=$KEYSPACE -rate threads=$THREADS -node $NODES 
+
+:
+: Read test
+:
+cassandra-stress read  n=$REQUESTCOUNT cl=$CONSISTENCY -schema keyspace=$KEYSPACE -rate threads=$THREADS -node $NODES
+
+
