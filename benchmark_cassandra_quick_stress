@@ -1,16 +1,27 @@
 #!/usr/bin/env bash
 
+
 #
 # Trivial cassandra write and read test.
 #
- REQUESTCOUNT=1000000
-#REQUESTCOUNT=10000000
+WORK="duration=10m"
+#WORK="duration=1m"
+#WORK="n=1000"
+#WORK="n=10000000"
+truncate=never # always, never, once
+loglevel=normal # normal, verbose
+loginterval=6s
+LOGARGS="-log interval=$loginterval level=$loglevel"
 THREADS=200
-KEYSPACE="test_sanity"
-CONSISTENCY=LOCAL_QUORUM
-# user=cassandra
-# password=cassandra 
-# file=write_$NOW.log
+KEYSPACE="keyspace3"
+CONSISTENCY=one
+#CONSISTENCY=local_one
+#WARMUP=no-warmup
+
+
+#env user=stresstest password=sxxxxx123 cassandra-stress read duration=1m cl=one truncate=never -mode thrift -schema keyspace=keyspace3 -rate threads=200 -node 56.76.80.67
+#env user=stresstest password=sxxxxx123 benchmark_cassandra_quick_stress 56.76.80.67
+
 #
 # For other suggestions, See: https://docs.datastax.com/en/cassandra_win/3.x/cassandra/tools/toolsCStress.html
 #
@@ -18,24 +29,30 @@ CONSISTENCY=LOCAL_QUORUM
 export thisCommand=`basename $0`
 
 if [ x"$1" == x ]; then
-	echo "Error: missing directory name"
-	echo "Usage: $thisCommand 20.39.21.99"
-	exit 1
+        echo "Error: missing node name or ip"
+        echo "Usage: $thisCommand 20.39.21.99"
+        exit 1
 else
-	NODES="$1"   # change for your cluster. Can be IPs and/or comma seperated
-	shift
+        NODES="$1"   # change for your cluster. Can be IPs and/or comma seperated
+        shift
 fi
 
-set -x
+logfile=stress_$(date +'%Y%m%d.%H%M')_WRITE_READ_${REQUESTCOUNT}_${CONSISTENCY}_${THREADS}thd_.log
+(
+        set -e # Quit if there are errors returned
+        set -x # Verbose
 
-:
-: Write test
-:
-cassandra-stress write n=$REQUESTCOUNT cl=$CONSISTENCY -schema keyspace=$KEYSPACE -rate threads=$THREADS -node $NODES 
+        :
+        : Write test
+        :
+        cassandra-stress write $WARMUP $WORK cl=$CONSISTENCY truncate=$truncate -mode thrift $USERARG $PASSARG -schema keyspace=$KEYSPACE -rate threads=$THREADS -node $NODES $LOGARGS
+        #cassandra-stress write n=10000 cl=one -mode thrift user=stresstest password=xxxxxxxxxx123 -schema keyspace='keyspace3' -node 56.76.80.65
+        #cassandra-stress write duration=1m cl=one^Cmode thrift user=stresstest password=xxxxxxxxxx123 -rate threads=200 -node 56.76.80.68
 
-:
-: Read test
-:
-cassandra-stress read  n=$REQUESTCOUNT cl=$CONSISTENCY -schema keyspace=$KEYSPACE -rate threads=$THREADS -node $NODES
+        :
+        : Read test
+        :
+        cassandra-stress read  $WARMUP $WORK cl=$CONSISTENCY  truncate=$truncate -mode thrift $USERARG $PASSARG -schema keyspace=$KEYSPACE -rate threads=$THREADS -node $NODES $LOGARGS
+        #cassandra-stress read  n=$REQUESTCOUNT $USERARG $PASSARG cl=$CONSISTENCY -schema keyspace=$KEYSPACE -rate threads=$THREADS -node $NODES
 
-
+) 2>&1 | tee $logfile
