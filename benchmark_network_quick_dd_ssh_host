@@ -15,7 +15,8 @@ else
 fi
 
 blockSize=102400000
-blockCount=10000
+blockCount=100
+#blockCount=10000
 
 set -x
 ssh "$remoteLogin" dd if=/dev/zero bs=$blockSize count=$blockCount | time dd of=/dev/null bs=$blockSize count=$blockCount

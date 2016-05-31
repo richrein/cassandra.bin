@@ -65,7 +65,11 @@ showProcesses () {
 		ip_port_process_list $portNumber;
 	done | grep -v '^COMMAND[	 ]*PID' | sed -e 's/^[^ 	]*[ 	]*\([0-9]*\).*/\1/' | sort -u -g
 	)
-	ps -l -p $process_ids | cat
+	if [ x"$process_ids" != x ]; then
+		ps -l -p $process_ids | cat
+	else
+		echo none
+	fi
 }
 
 
