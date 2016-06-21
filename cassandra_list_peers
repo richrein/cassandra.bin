@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo 'SELECT data_center, rack, host_id, release_version, rpc_address, schema_version from system.peers;' | cqlsh # | tail --lines +4
+echo 'SELECT data_center, rack, host_id, release_version, rpc_address, schema_version from system.peers;' | cassandra_cqlsh

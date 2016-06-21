@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo 'select * from system.schema_columnfamilies;' | cqlsh # | tail --lines +4
+echo 'select * from system.schema_columnfamilies;' | cassandra_cqlsh 

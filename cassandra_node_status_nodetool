@@ -1,7 +1,7 @@
 
 
 set -x
-cqlsh --cql3 </dev/null
+cassandra_cqlsh --cql3 </dev/null
 
 nodetool  ring
 nodetool  tpstats

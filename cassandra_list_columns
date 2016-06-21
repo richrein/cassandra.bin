@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo 'select * from system.schema_columns;' | cqlsh # | tail --lines +4
+echo 'select * from system.schema_columns;' | cassandra_cqlsh
 
