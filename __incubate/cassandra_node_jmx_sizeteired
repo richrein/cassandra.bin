@@ -1,0 +1,12 @@
+
+
+
+$java -jar ~/src/jmxterm/target/jmxterm-1.0.0-SNAPSHOT-uber.jar --url 127.0.0.1:7199
+Welcome to JMX terminal. Type "help" for available commands.
+$>domain org.apache.cassandra.db
+#domain is set to org.apache.cassandra.db
+$>bean org.apache.cassandra.db:columnfamily=imvis_piece_scan,keyspace=predictive_workload_normalized,type=ColumnFamilies
+#bean is set to org.apache.cassandra.db:columnfamily=imvis_piece_scan,keyspace=predictive_workload_normalized,type=ColumnFamilies
+$>set CompactionParametersJson "{\"class\":\"SizeTieredCompactionStrategy\",\"min_threshold\":16}"
+#Value of attribute CompactionParametersJson is set to {"class":"SizeTieredCompactionStrategy","min_threshold":16}
+$>
