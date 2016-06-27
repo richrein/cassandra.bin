@@ -5,5 +5,5 @@
 # The plan is to lookup an encyrpted password in directory ~/.cassandra_cqlsh/user
 #
 
-exec cqlsh `ip_address_private` 
+exec cqlsh `ip_address_private` "$@"
 
