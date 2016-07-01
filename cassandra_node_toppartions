@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+
+
+
+
+# # nodetool   toppartitions x y 5000
+# WRITES Sampler:
+#   Cardinality: ~2 (256 capacity)
+#   Top 10 partitions:
+# 	Partition     Count       +/-
+# 	555         1         0
+# 
+# READS Sampler:
+#   Cardinality: ~2 (256 capacity)
+#   Top 10 partitions:
+# 	Partition     Count       +/-
+# 	555         1         0
+# 

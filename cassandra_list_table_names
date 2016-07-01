@@ -1,3 +1,5 @@
 #!/bin/bash
 
-echo 'select keyspace_name, columnfamily_name from system.schema_columnfamilies;' | cassandra_cqlsh | sed -e 's/|/ /' -e 's/--+--/-- --/' 
+echo 'select keyspace_name, columnfamily_name from system.schema_columnfamilies;' | cassandra_cqlsh | grep -v 'keyspace_name.*columnfamily_name' | grep -v -- '----------' | grep '|' | sed -e 's/ //g' -e 's/|/ /' | sort | while read ks table; do printf '%30s.%-30s\n' "$ks" "$table"; done
+
+exit
