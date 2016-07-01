@@ -6,7 +6,6 @@
 
 # cassandra_node_ips [datacentername]
 
-
 if [ x"$1" != x ]; then
         count=$(nodetool status | grep "$1" | grep -i datacenter | wc -l)
         if [ $count == 1 ]; then
@@ -19,12 +18,12 @@ if [ x"$1" != x ]; then
         fi
 fi
 
-rowFormat="%-20s %-20s\n"
+rowFormat="%s\n"
 
 nodetool status \
 | ( if [ x"$datacenter" == x ]; then cat; else sed -n "/Datacenter: $datacenter/,/Datacenter:/p"; fi ) \
 | sed -e 's:[^0-9.]*\([0-9.]*\).*:\1:' \
-| grep '[0-9]' \
+| grep '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*' \
 | (
         while read localIp ; do 
                 printf "$rowFormat" $localIp 
