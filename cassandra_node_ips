@@ -12,6 +12,8 @@ if [ x"$1" != x ]; then
         if [ $count == 1 ]; then
                 datacenter="$1";
         else
+		echo "Error: $(basename $0): bad Datacenter name"
+		echo "$(basename $0) [datacentername]"
                 nodetool status | grep Datacenter 1>&2
                 exit 2
         fi
