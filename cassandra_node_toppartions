@@ -1,8 +1,50 @@
 #!/usr/bin/env bash
 
+if [ x"$1" == x"-msecs" ]; then
+	samplePeriod="$2"; shift; shift
+else
+	samplePeriod=5000
+fi
+
+(if [ x"$1" == x ]; then
+	echo 'select keyspace_name, columnfamily_name from system.schema_columnfamilies;' | cassandra_cqlsh | grep -v 'keyspace_name.*columnfamily_name' | grep -v -- '----------' | grep '|' | sed -e 's/ //g' -e 's/|/ /' | sort \
+	| egrep -e '(system local|system local)' 
+fi) \
+| while read ks table; do
+	printf '%30s.%-30s\n' "$ks" "$table";
+	
+	topPartitions=$(nodetool   toppartitions "$ks" "$table" $samplePeriod )
+	if [ x$(echo "$topPartitions" | grep 'Cardinality: ~0' | wc -l) != x2 ]; then
+		echo "$topPartitions" | grep -v 'Cardinality:' | grep -v 'Top.*partitions:' | echo $(cat)
+	fi
+done
 
 
+exit 0
+# Notes to follow
 
+ 12617  code_value
+    222  fdb_facility_by_zip
+  11088  mail_object_by_barcode
+   6067  piece_range_view_by_scan
+   5917  service_type_code 
+
+#| grep 'system local' \
+
+#
+# nodetool toppartion output patterns parsed
+#
+
+# WRITES Sampler:
+#   Cardinality: ~0 (256 capacity)
+#   Top 10 partitions:
+# 	Nothing recorded during sampling period...
+#                     dse_system.registered_leaders            
+# READS Sampler:
+#   Cardinality: ~0 (256 capacity)
+#   Top 10 partitions:
+# 	Nothing recorded during sampling period...
+# 
 
 # # nodetool   toppartitions x y 5000
 # WRITES Sampler:
@@ -17,3 +59,6 @@
 # 	Partition     Count       +/-
 # 	555         1         0
 # 
+#!/bin/bash
+
+
