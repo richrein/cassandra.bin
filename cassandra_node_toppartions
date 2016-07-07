@@ -1,64 +1,69 @@
 #!/usr/bin/env bash
 
 if [ x"$1" == x"-msecs" ]; then
-	samplePeriod="$2"; shift; shift
+        samplePeriod="$2"; shift; shift
 else
-	samplePeriod=5000
+        samplePeriod=5000
 fi
 
+if [ x"$1" != x ]; then
+        pattern="$1"; shift
+else
+        pattern='(predictive_workload mail_object_by_barcode)'
+fi
+
+diffdir="$HOME/.diffs"
+if [ ! -d "$diffdir" ]; then
+        mkdir "$diffdir"
+fi
+
+cqlsh_script=cqlsh-prod
+#cqlsh_script=cassandra_cqlsh
+
+cfstats_diff_int() {
+kstable=$1
+valuename=$2
+
+        a=$(sed -e "/$valuename:/!d" -e 's/.*: \([0-9.]*\)/\1/' ~/.diffs/$kstable.cfstats.first)
+        b=$(sed -e "/$valuename:/!d" -e 's/.*: \([0-9.]*\)/\1/' ~/.diffs/$kstable.cfstats.last)
+        echo $b - $a | bc  -q
+}
+
 (if [ x"$1" == x ]; then
-	echo 'select keyspace_name, columnfamily_name from system.schema_columnfamilies;' | cassandra_cqlsh | grep -v 'keyspace_name.*columnfamily_name' | grep -v -- '----------' | grep '|' | sed -e 's/ //g' -e 's/|/ /' | sort \
-	| egrep -e '(system local|system local)' 
+        echo 'select keyspace_name, columnfamily_name from system.schema_columnfamilies;' | $cqlsh_script | grep -v 'keyspace_name.*columnfamily_name' | grep -v -- '----------' | grep '|' | sed -e 's/ //g' -e 's/|/ /' | sort \
+        | egrep -e "$pattern"
 fi) \
 | while read ks table; do
-	printf '%30s.%-30s\n' "$ks" "$table";
-	
-	topPartitions=$(nodetool   toppartitions "$ks" "$table" $samplePeriod )
-	if [ x$(echo "$topPartitions" | grep 'Cardinality: ~0' | wc -l) != x2 ]; then
-		echo "$topPartitions" | grep -v 'Cardinality:' | grep -v 'Top.*partitions:' | echo $(cat)
-	fi
+        printf '%-60s\n' "$ks.$table";
+        nodetool cfstats "$ks.$table" > "$diffdir/$ks.$table.cfstats.first" 2>&1
+        nodetool cfhistograms "$ks" "$table" > "$diffdir/$ks.$table.cfhistograms.first" 2>&1
+        topPartitions=$(nodetool   toppartitions "$ks" "$table" $samplePeriod )
+        nodetool cfstats "$ks.$table" > "$diffdir/$ks.$table.cfstats.last"  2>&1
+        nodetool cfhistograms "$ks" "$table" > "$diffdir/$ks.$table.cfhistograms.last" 2>&1
+        ops=$(echo $(cfstats_diff_int "$ks.$table" "Read Count") + $(cfstats_diff_int "$ks.$table" "Write Count") + $(cfstats_diff_int "$ks.$table" "Local read count") + $(cfstats_diff_int "$ks.$table" "Local write count") | bc -q)
+        if [ x$ops != x0 ]; then
+                printf "%s%s\n" "Read Count: " $(cfstats_diff_int "$ks.$table" "Read Count")
+                printf "%s%s\n" "Write Count: " $(cfstats_diff_int "$ks.$table" "Write Count")
+                printf "%s%s\n" "Local read count: " $(cfstats_diff_int "$ks.$table" "Local read count")
+                printf "%s%s\n" "Local write count: " $(cfstats_diff_int "$ks.$table" "Local write count")
+                echo ''
+                echo nodetool cfhistograms $ks $table
+                cat "$diffdir/$ks.$table.cfhistograms.last"
+                echo nodetool cfstats $ks.$table
+                cat "$diffdir/$ks.$table.cfstats.last" | grep -v -- '-------'
+                if [ x$(echo "$topPartitions" | grep 'Cardinality: ~0' | wc -l) != x2 ]; then
+                        echo nodetool toppartitions $ks $table
+                        echo "$topPartitions" | grep -v 'Cardinality:' | grep -v 'Top.*partitions:' | echo $(cat)
+                        echo ''
+                fi
+                echo ''
+                echo ''
+        fi
 done
 
+exit 0 # Notes to follow
 
-exit 0
-# Notes to follow
-
- 12617  code_value
-    222  fdb_facility_by_zip
-  11088  mail_object_by_barcode
-   6067  piece_range_view_by_scan
-   5917  service_type_code 
-
-#| grep 'system local' \
-
-#
-# nodetool toppartion output patterns parsed
-#
-
-# WRITES Sampler:
-#   Cardinality: ~0 (256 capacity)
-#   Top 10 partitions:
-# 	Nothing recorded during sampling period...
-#                     dse_system.registered_leaders            
-# READS Sampler:
-#   Cardinality: ~0 (256 capacity)
-#   Top 10 partitions:
-# 	Nothing recorded during sampling period...
-# 
-
-# # nodetool   toppartitions x y 5000
-# WRITES Sampler:
-#   Cardinality: ~2 (256 capacity)
-#   Top 10 partitions:
-# 	Partition     Count       +/-
-# 	555         1         0
-# 
-# READS Sampler:
-#   Cardinality: ~2 (256 capacity)
-#   Top 10 partitions:
-# 	Partition     Count       +/-
-# 	555         1         0
-# 
-#!/bin/bash
-
+        | egrep -e '(predictive_workload mail_object_by_barcode)'
+        | egrep -e '(iv_mt)'
+        | egrep -e '(system local|system local)'
 
