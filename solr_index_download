@@ -8,8 +8,8 @@ user=":"
 #user="myuser"
 #user="myuser:mypassword"
 
-ipaddr=`ip_address_private`
-#ipaddr="56.76.80.64"
+ipaddr=$(ip_address_private)
+#ipaddr="56.79.80.64"
 
 core="x.y"
 #core="mykeyspace.mytable"
