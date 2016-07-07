@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+#
+## Script for uploading scheme.xml and reindexing for DSE 4.8 Solr
+#
+
+user=":"
+#user="myuser"
+#user="myuser:mypassword"
+
+ipaddr=`ip_address_private`
+#ipaddr="56.76.80.64"
+
+core="x.y"
+#core="mykeyspace.mytable"
+
+deleteAll=true         # If healthy live production deleteAll=false to let old indexes run until reindexed, If node badly broken use deleteAll=true to discard old indexes
+
+echo $ipaddr, $core, deleteAll=$deleteAll >&2
+answer=`printf '%s' 'Parameters OK? ' >&2; read val; echo $val;`;
+if [ x$answer != x"yes" ]; then echo cancelled >&2; exit 1; fi
+
+set -e
+set -x 
+:
+: Upload the schema to prep for reindex
+curl -u $user "http://$ipaddr:8983/solr/resource/$core/schema.xml" --data-binary @schema.xml -H 'Content-type:text/xml; charset=utf-8'
+
+:
+: Reindex using the uploaded schema
+curl -u $user "http://$ipaddr:8983/solr/admin/cores?action=RELOAD&name=$core&reindex=true&deleteAll=$deleteAll"
+

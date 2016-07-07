@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+#
+## Script for downloading scheme.xml for DSE 4.8 Solr
+#
+
+user=":"
+#user="myuser"
+#user="myuser:mypassword"
+
+ipaddr=`ip_address_private`
+#ipaddr="56.76.80.64"
+
+core="x.y"
+#core="mykeyspace.mytable"
+
+echo $ipaddr, $core >&2
+answer=`printf '%s' 'Parameters OK? ' >&2; read val; echo $val;`;
+if [ x$answer != x"yes" ]; then echo cancelled; exit 1; fi
+
+set -e
+set -x
+:
+: Download the schema to edit
+curl -u "$user" "http://$ipaddr:8983/solr/$core/admin/file?file=schema.xml&contentType=text/xml;charset=utf-8"
