@@ -27,7 +27,7 @@ set -e
 set -x 
 :
 : Upload the schema to prep for reindex
-curl -u $user "http://$ipaddr:8983/solr/resource/$core/schema.xml" --data-binary @schema.xml -H 'Content-type:text/xml; charset=utf-8'
+curl -u $user "http://$ipaddr:8983/solr/resource/$core/$schemafile" --data-binary @schema.xml -H 'Content-type:text/xml; charset=utf-8'
 
 :
 : Reindex using the uploaded schema
