@@ -4,6 +4,9 @@
 # List processes that have the port open
 #
 
+# make sure running as root
+if [[ $EUID -ne 0 ]]; then echo "Error: Run $(basename $0) as root"; exit 1; fi
+
 OS_FLAVOR=$(os_flavor)
 
 if [ x$1 = x ]; then echo "`basename $0`: Error - Missing port arg"; exit; fi
