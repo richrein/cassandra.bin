@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
+# make sure running as root
+if [[ $EUID -ne 0 ]]; then echo "Error: Run $(basename $0) as root"; exit 1; fi
+
 cat /proc/sys/net/ipv4/ip_local_port_range | sed -e 's/\([0-9]*\)[^0-9]*\([0-9]*\)/echo $((\2-\1))/' | bash
 
