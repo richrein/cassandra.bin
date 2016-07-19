@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cat /proc/sys/net/ipv4/ip_local_port_range | sed -e 's/\([0-9]*\)[^0-9]*\([0-9]*\)/echo $((\2-\1))/' | bash
+

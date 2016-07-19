@@ -17,8 +17,8 @@ if [ ! -d "$diffdir" ]; then
         mkdir "$diffdir"
 fi
 
-cqlsh_script=cqlsh-prod
-#cqlsh_script=cassandra_cqlsh
+#cqlsh_script=cqlsh-prod
+cqlsh_script=cassandra_cqlsh
 
 cfstats_diff_int() {
 kstable=$1
