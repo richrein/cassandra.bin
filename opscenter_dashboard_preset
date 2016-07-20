@@ -1,0 +1,47 @@
+
+ipaddr=56.201.240.63
+ipport=9443
+username="ivusr"
+password="ivusr123"
+
+delete=false
+case x"$1" in 
+	x-d|x--delete) delete=true;;
+esac
+
+# Curl 
+# -sS no progress but show errors
+# -k save and use server certs for https
+
+opscenter_session=$(curl -sS -k -X POST -d "{\"username\":\"$username\", \"password\":\"$password\"}" "https://$ipaddr:$ipport/login" | sed -e 's/{"[^"]*"[:" ]*\([^"]*\)"}/\1/')
+# echo opscenter_session: $opscenter_session  # {"sessionid": "a3117e86acc7374f2a7d74e8e222f470"}
+
+print_dashboard_presets () {
+	echo "id                                     preset"
+	curl -sS -k -H "opscenter-session: $opscenter_session" "https://$ipaddr:$ipport/6005/rc/dashboard_presets/" \
+	| sed -e 's/"id": /\n\'$'\n/g' \
+	| sed -e 's/}.*$//g' \
+	| grep name \
+	| sed -e 's/"\([^"]*\)[", "]*name[": ]*\([^"]*\).*/\1   \2/' # "293d449f-904d-4303-8fd2-46c5d19f293e", "name": "mvis_piece_scan"
+}
+
+delete_dashboard_preset() {
+	preset_id="$1"
+	echo deleting "$preset_id"
+	curl -sS -k -H "opscenter-session: $opscenter_session" -X DELETE "https://$ipaddr:$ipport/6005/rc/dashboard_presets/$preset_id" 
+}
+
+print_dashboard_presets 
+
+if [ $delete == true ]; then 
+	printf "\nEnter preset id: "
+	read preset_id
+	if [ x"$preset_id" = x ]; then exit 0; fi
+	delete_dashboard_preset "$preset_id"
+	echo ''
+	echo ''
+	print_dashboard_presets 
+fi
+
+
+
