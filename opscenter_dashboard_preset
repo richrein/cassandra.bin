@@ -4,8 +4,8 @@ ipport=9443
 username="$username"
 password="$password"
 
-save_value=$ipaddr; printf "ipaddr ($save_value): "; read ipaddr; if [ x"$username" == x ]; then ipaddr=$save_value; fi
-save_value=$ipport; printf "ipport ($save_value): "; read ipport; if [ x"$username" == x ]; then ipport=$save_value; fi
+save_value=$ipaddr; printf "ipaddr $save_value: "; read ipaddr; if [ x"$username" == x ]; then ipaddr=$save_value; fi
+save_value=$ipport; printf "ipport $save_value: "; read ipport; if [ x"$username" == x ]; then ipport=$save_value; fi
 if [ x"$username" == x ]; then printf "username: "; read username; if [ x"$username" == x ]; then exit 0; fi; fi
 if [ x"$password" == x ]; then printf "password: "; read -s password; echo ''; if [ x"$password" == x ]; then exit 0; fi; fi
 
