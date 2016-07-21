@@ -2,7 +2,7 @@
 
 samplePeriod=${samplePeriod:-5000}              # 5 seconds
 cqlsh_script=${cqlsh_script:-'cassandra_cqlsh'} # script to call cqlsh with correct password and host address
-pattern=${pattern:-'*'}                         # keyspace and table name pattern. E.G. '(balance)' or '(system local|system peers)'
+pattern=${pattern:-'*'}                         # keyspace and table name pattern. Substring Match '(addr_book)'.  Exact match '(iv_mt addr_book_cont$)'. List of exact matches '(system local$|system peers$)'.
 while [ x"${1:0:1}" == x"-" ]; do
 	case "$1" in
 	"--milliseconds") samplePeriod="$2"; shift; shift; ;;
@@ -15,15 +15,9 @@ if [ x"$1" != x ]; then
 	pattern="$1"; shift
 fi
 
-echo "args: $samplePeriod, $cqlsh_script, $pattern"
-exit
-
 diffdir="$HOME/.diffs"
 if [ ! -d "$diffdir" ]; then
 	mkdir "$diffdir"
-fi
-
-if [ x"$cqlsh_script" == x ]; then
 fi
 
 cfstats_diff_int() {
@@ -65,5 +59,3 @@ fi) \
 		echo ''
 	fi
 done
-
-
