@@ -9,7 +9,6 @@ save_value=$ipport; printf "ipport $save_value: "; read ipport; if [ x"$username
 if [ x"$username" == x ]; then printf "username: "; read username; if [ x"$username" == x ]; then exit 0; fi; fi
 if [ x"$password" == x ]; then printf "password: "; read -s password; echo ''; if [ x"$password" == x ]; then exit 0; fi; fi
 
-
 # Curl reference
 # -sS no progress but show errors
 # -k save and use server certs for https
@@ -40,10 +39,17 @@ print_dashboard_presets
 printf "\nEnter preset id to delete or press return to end: "
 while read preset_id
 do
-	if [ x"$preset_id" = x ]; then exit 0; fi
+	if [ x"$preset_id" == x ]; then exit 0; fi
+	if [ x"$preset_id" == x"all" ]; then 
+		print_dashboard_presets | while read preset_id preset_name; do 
+			delete_dashboard_preset "$preset_id"
+		done;
+		continue;
+	fi
 	delete_dashboard_preset "$preset_id"
 	echo ''
 	echo ''
 	print_dashboard_presets 
+	printf "\nEnter preset id to delete or press return to end: "
 done
 
