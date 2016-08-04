@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+
+# allow invokation of related scripts in this dir
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH"
+
+ipaddr=$(ip_address_private)
+yyyymmdd=$(date +'%Y%m%d')
+hh=$(date '%H')
+mm=$(date '%M')
+dayofweek=$(date '%a')
+rm -f "$HOME/logdir/$ipaddr.*.$dayofweek.$hh.$mm"
+log_file=${log_file:-"$HOME/logdir/$ipaddr.$yyyymmdd.$dayofweek.$hh.$mm"}
+exec &> >"$log_file"
+
 samplePeriod=${samplePeriod:-5000}              # 5 seconds
 cqlsh_script=${cqlsh_script:-'cassandra_cqlsh'} # script to call cqlsh with correct password and host address
 pattern=${pattern:-'*'}                         # keyspace and table name pattern. Substring Match '(addr_book)'.  Exact match '(iv_mt addr_book_cont$)'. List of exact matches '(system local$|system peers$)'.
