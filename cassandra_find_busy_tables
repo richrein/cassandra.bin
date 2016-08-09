@@ -4,14 +4,14 @@
 # allow invokation of related scripts in this dir
 scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH"
 
-ipaddr=$(ip_address_private)
-yyyymmdd=$(date +'%Y%m%d')
-hh=$(date '%H')
-mm=$(date '%M')
-dayofweek=$(date '%a')
-rm -f "$HOME/logdir/$ipaddr.*.$dayofweek.$hh.$mm"
-log_file=${log_file:-"$HOME/logdir/$ipaddr.$yyyymmdd.$dayofweek.$hh.$mm"}
-exec &> >"$log_file"
+#ipaddr=$(ip_address_private)
+#yyyymmdd=$(date +'%Y%m%d')
+#hh=03 ; #$(date '%H')
+#mm=00; #$(date '%M')
+#dayofweek=Sun; #$(date '%a')
+#rm -f "$HOME/logdir/$ipaddr.*.$dayofweek.$hh.$mm" 2>&1 >/dev/null
+#log_file=${log_file:-"$HOME/logdir/$ipaddr.$yyyymmdd.$dayofweek.$hh.$mm"}
+#exec 2>&1 >"$log_file"
 
 samplePeriod=${samplePeriod:-5000}              # 5 seconds
 cqlsh_script=${cqlsh_script:-'cassandra_cqlsh'} # script to call cqlsh with correct password and host address
