@@ -35,17 +35,17 @@ Rich Rein
 ## Script Types
 Scripts names prefixes group the scripts by subject:
 <ul>
-<li>cassandra\_ - Cassandra operations and queries
-<li>ccm\_ - CCM operations
-<li>datastaxagent\_backup\_ - OpsCenter backup scripts
-<li>dse_node\_ - DSE node configuration and queries
-<li>aws\_ - Amazon Web Service queries (ie availablilty zone)
-<li>azure\_ - Azure queries (IE Zones, instance ids)
-<li>dse\_ - DSE configuration and queries (IE status for DSE's ports') <li>ip\_address\_ - IP address queries
-<li>network\_benchmark\_ - Quick and dirty benchmarks
-<li>opscenter\_ - Operations on OpsCenter deployments
-<li>process\_ - Process operations and queries
-<li>solr\_ - Solr operations </ul>
+<li>cassandra_ - Cassandra operations and queries
+<li>ccm_ - CCM operations
+<li>datastaxagent_backup_ - OpsCenter backup scripts
+<li>dse_node_ - DSE node configuration and queries
+<li>aws_ - Amazon Web Service queries (ie availablilty zone)
+<li>azure_ - Azure queries (IE Zones, instance ids)
+<li>dse_ - DSE configuration and queries (IE status for DSE's ports') <li>ip_address_ - IP address queries
+<li>network_benchmark_ - Quick and dirty benchmarks
+<li>opscenter_ - Operations on OpsCenter deployments
+<li>process_ - Process operations and queries
+<li>solr_ - Solr operations </ul>
 
 ## Script Highlights
 <ul>
