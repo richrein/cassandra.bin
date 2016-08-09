@@ -1,6 +1,6 @@
 # cassandra.bin
 ## Overview
-Provides example scripts to manage cassandra.
+Provides example bash scripts to simpify cassandra and DataStax Enterprise clusters.
 
 This repo contains some basic script templates for using Cassandra and DSE (DataStax Enterprise). The contents are provided using the Apache 2.0 license with allows distribution without liabilities to either party.
 
@@ -32,8 +32,22 @@ Rich Rein
     > source ~/.bashrc
 </pre>
 
-## Script Index
-Other items in the repo: 
+## Script Types
+Scripts names prefixes group the scripts by subject:
+<ul>
+<li>cassandra\_ - Cassandra operations and queries
+<li>ccm\_ - CCM operations
+<li>datastaxagent\_backup\_ - OpsCenter backup scripts
+<li>dse_node\_ - DSE node configuration and queries
+<li>aws\_ - Amazon Web Service queries (ie availablilty zone)
+<li>azure\_ - Azure queries (IE Zones, instance ids)
+<li>dse\_ - DSE configuration and queries (IE status for DSE's ports') <li>ip\_address\_ - IP address queries
+<li>network\_benchmark\_ - Quick and dirty benchmarks
+<li>opscenter\_ - Operations on OpsCenter deployments
+<li>process\_ - Process operations and queries
+<li>solr\_ - Solr operations </ul>
+
+## Script Highlights
 <ul>
 <li><p>dse_node_install - installs dse on aws and azure nodes. Requires vm and storage to have been set up first. Change opscenter ip and seed ip. Install command is: dse_node_install <datacenter> . other IPs are figured out.
 <li>datastaxagent_backup_local_disk - OpsCenter Post Snapshot script to rsync entire data folder to 1 or more disks that are rotated daily.
