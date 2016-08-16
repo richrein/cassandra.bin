@@ -8,14 +8,13 @@
 if [[ $EUID -ne 0 ]]; then echo "Error: Run $(basename $0) as root"; exit 1; fi
 
 # allow invokation of related scripts in this dir
-scriptdir=`dirname "$BASH_SOURCE"`
-PATH="$scriptdir:$PATH"
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH"
 
 OS_FLAVOR=$(os_flavor)
 case $OS_FLAVOR in
 	osx) 	;;
 	ubuntu) ;;
-        linux) ;;
+    linux) ;;
 	*) echo $OS_FLAVOR not supported; exit 1;;
 esac
 
@@ -69,7 +68,11 @@ showProcesses () {
 	done | grep -v '^COMMAND[	 ]*PID' | sed -e 's/^[^ 	]*[ 	]*\([0-9]*\).*/\1/' | sort -u -g
 	)
 	if [ x"$process_ids" != x ]; then
-		ps -l -p $process_ids | cat
+		for pid in $process_ids; do
+			ps -l -p $pid | cat
+			echo ''
+		done
+#		ps -l -p $process_ids | cat
 	else
 		echo none
 	fi
@@ -89,24 +92,34 @@ showPort 7000	Cassandra inter-node storage port
 showPort 7001	Cassandra inter-node ssl storage port
 showPort 7199	Cassandra JMX port
 
-showSection Spark
-showPort 7077	Spark Master inter-node port \(dse.yaml\)
-showPort 4040	Spark application website port
-showPort 7080	Spark Master web site port \(spark-env.sh\)
-showPort 7081	Spark Worker web site port \(spark-env.sh\)
-
 showSection Solr 
 showPort 8983	Solr port and demo app website port 
-showPort 8984	Solr inter-node communication port \(dse.yaml\) 
+showPort 8984	Solr inter-node communication port \(dse.yaml\) Deprecated 5.0
+
+showSection Spark
+showPort 7080	Spark Master web site port \(spark-env.sh\)
+showPort 7081	Spark Worker web site port \(spark-env.sh\)
+showPort 4040	Spark Application website port
+showPort 7077	Spark Master inter-node port \(dse.yaml\)
+showPort 8090	Spark Jobserver REST API port
+showPort 9999	Spark Jobserver remote access JMX port
+showPort 18080	Spark application history server website port \(spark.history.ui.port\)
+
+showSection Graph
+showPort 8182	Gremlin server port for DSE Graph
+
+showSection DSEFS
+showPort 5598	DSEFS public port
+showPort 5599	DSEFS private port
 
 showSection Hadoop
 showPort 8012	Hadoop Job Tracker client port
 showPort 9000	Hadoop NameNode port
 showPort 9290	Hadoop Job Tracker OpsCenter Thrift port
-showPort 10000	Hadoop Hive\/Shark server port \(hive-site.xml\)
+showPort 10000	Hadoop Spark SQL\/Hive\/Shark server port \(hive-site.xml\)
 showPort 10001	Hive Spark SQL Thrift Server 
 showPort 50030	Hadoop Job Tracker website port
 showPort 50060	Hadoop Task Tracker website port
 
 showSection	Processes
-showProcesses 8888 50031 61620   9042 9160 7000 7001 7199   7077 4040 7080 7081   8983 8984   8012 9000 9290 10000 10001 50030 50060
+showProcesses 8888 50031 61620   9042 9160 7000 7001 7199   8983 8984   7077 4040 7080 7081    5598 5599   8012 9000 9290 10000 10001 50030 50060
