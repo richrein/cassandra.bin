@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+#
+# Script to dump node information with node name and address
+#
+
+nodetool ring | while read node_ipaddr rack_name status state load_size unit owns tokens ; do 
+	# blank line
+	if [ x"$node_ipaddr" = x ]; then printf '\n'; continue; fi
+
+	# title
+	if [ x"$rack_name" = x"Rack" ]; then tokens="Token(s)"; node_name="Node Name";
+		printf '%20s    %-25s %-15s %-8s %-8s %-8s  %-8s    %-8s\n' "Token(s)" "Name" "Address" "Rack" "Status" "State" "Load" "Owns" ;
+		continue;
+	fi
+
+	# not an ip address
+	nondecimal=$(echo "$node_ipaddr" | sed 's/[0-9.]*//g')
+	node_line="$node_ipaddr $rack_name $status $state $load_size $unit $owns $tokens"
+	if [ x"$nondecimal" != x ]; then printf '%s\n' "$node_line"; continue; fi
+
+	# first token shown
+	if [ x"$rack_name" == x ] && [ x"$node_ipaddr" != x ]; then tokens="$node_ipaddr"; printf '%20s\n' "$tokens"; continue; fi
+
+	# node information
+	# eagnmnmep1250.usps.gov 56.201.240.31 c-K40       Up     Normal  523.93 GB       ?                   -9223372036854775808
+	node_name=$(nslookup "$node_ipaddr" | grep 'name =' | sed -e 's/^[^=]*=\(.*\)\./\1/' -e 's/ //g' 2>/dev/null)
+	load="$load_size $unit"
+	printf '%20s    %-25s %-15s %-8s %-8s %-8s %10s   %-8s\n' "$tokens" "$node_name" "$node_ipaddr" "$rack_name" "$status" "$state" "$load" "$owns"
+done 

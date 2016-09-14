@@ -3,6 +3,8 @@
 #
 # Pause a list of processes and restart when user presses return
 #
+# Uses SIGSTOP and SIGCONT to pretend simulate insufficient CPU
+#
 
 trace_cmd () {
 	cmd="$1"; shift

@@ -1,4 +1,60 @@
 #!/bin/bash
 
-echo 'select keyspace_name, columnfamily_name, key_alias, key_aliases, key_validator from system.schema_columnfamilies;' | cassandra_cqlsh
+
+# prompt here if required value is not in enviroment or set by command line arguments
+cqlsh_script=${cqlsh_script:-$(default=cassandra_cqlsh; printf '%s: ' "cqlsh_script? ($default)" >/dev/tty; read resp; if [ x"$resp" == x ]; then echo $default; else echo $resp; fi)}
+
+formatString="%80s,   %s\n"
+#formatString="%s,%s\n"
+ScriptDebug='false'
+
+more=true
+last_kstable=startflagpattern
+last_keylevel=0
+if [ x"$1" == x ]; then
+	echo 'select keyspace_name, columnfamily_name, type, component_index, column_name from system.schema_columns ;' | $cqlsh_script \
+	| grep -v '        regular |' \
+	| sed -e 's/ partition_key |/1 |/' | sed -e 's/clustering_key |/2 |/' | sed -e 's/  compact_value |/1 |/' \
+	| sort \
+	| sed -e 's/|/ /g' \
+	| while $more; 
+	do 
+ 		read keyspace_name columnfamily_name type component_index column_name || more=false
+		if [ $more == false ]; then 
+			# Finish last table at end of file
+			keystring="$keystring)";
+			printf "$formatString" "$last_kstable" "$keystring"
+			break
+		fi
+
+		if [ x"$type" == x ]; then continue; fi # empty line
+		if [ x"$column_name" == x ]; then continue; fi # empty line
+		if [ x$component_index == x ]; then component_index=0; fi
+		if [ $component_index == 'null' ]; then component_index=0; fi
+
+		this_kstable="$keyspace_name.$columnfamily_name"
+		keylevel=$type
+		if [ $this_kstable != $last_kstable ] ; then 
+			if [ $last_kstable != startflagpattern ]; then
+				# Finish last table
+				keystring="$keystring)";
+				printf "$formatString" "$last_kstable" "$keystring"
+				if [ $ScriptDebug == 'true' ]; then echo '' ; fi
+			fi
+			if [ $ScriptDebug == 'true' ]; then echo $keyspace_name.$columnfamily_name t=$type idx=$component_index col=$column_name ; fi
+			if [ $last_keylevel == '2' ]; then keystring="($keystring"; fi
+			# Start new table, first partition key.
+			keystring="($column_name"
+		else
+			# Continue table and add collumn the keystring
+			if [ $ScriptDebug == 'true' ]; then echo $keyspace_name.$columnfamily_name t=$type idx=$component_index col=$column_name ; fi
+			if [ $keylevel == '2' ] && [ $last_keylevel == '1' ]; then keystring="($keystring)"; fi
+			 
+			keystring="$keystring, $column_name";
+		fi
+		last_kstable="$this_kstable"
+		last_keylevel="$keylevel"
+	done
+fi
+
 

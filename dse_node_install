@@ -7,6 +7,9 @@ opscenter_public_ip=$3
 node_public_ip=$4
 node_private_ip=$5
 
+#
+# Set the following defaults here. Recode to take from env and prompt if missing
+#
 cloud_type=azure # azure or aws
 default_seed_node_public_ip=104.40.22.205
 default_opscenter_public_ip=40.112.212.167
@@ -14,6 +17,8 @@ default_opscenter_public_ip=40.112.212.167
 data_file_directories="/mnt/cassandra/data"
 commitlog_directory="/mnt/cassandra/commitlog"
 saved_caches_directory="/mnt/cassandra/saved_caches"
+
+
 
 if [ -n $data_center_name ]; then		data_center_name=`printf '%s' 'data_center_name: ' >&2; read val; echo $val;`; fi
 if [ -n $seed_node_public_ip ]; then		seed_node_public_ip=$default_seed_node_public_ip; fi

@@ -1,5 +1,16 @@
 #!/bin/bash
 
-echo 'select keyspace_name, columnfamily_name from system.schema_columnfamilies;' | cassandra_cqlsh | grep -v 'keyspace_name.*columnfamily_name' | grep -v -- '----------' | grep '|' | sed -e 's/ //g' -e 's/|/ /' | sort | while read ks table; do printf '%30s.%-30s\n' "$ks" "$table"; done
+if [ x"$1" != x ]; then
+        pattern="$1"; shift
+else
+        pattern='*'
+fi
 
-exit
+# prompt here if required value not in enviroment or set by command line arguments
+cqlsh_script=${cqlsh_script:-$(default=cassandra_cqlsh; printf '%s: ' "cqlsh_script? ($default)" >/dev/tty; read resp; if [ x"$resp" == x ]; then echo $default; else echo $resp; fi)}
+
+if [ x"$1" == x ]; then
+        echo 'select keyspace_name, columnfamily_name from system.schema_columnfamilies;' | $cqlsh_script | grep -v 'keyspace_name.*columnfamily_name' | grep -v -- '----------' | grep '|' | sed -e 's/ //g' -e 's/|/ /' | sort \
+        | egrep -e "$pattern"
+fi
+

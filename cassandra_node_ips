@@ -11,22 +11,24 @@ if [ x"$1" != x ]; then
         if [ $count == 1 ]; then
                 datacenter="$1";
         else
-		echo "Error: $(basename $0): bad Datacenter name"
-		echo "$(basename $0) [datacentername]"
+                echo "Error: $(basename $0): bad Datacenter name" 1>&2
+                echo "$(basename $0) [datacentername]" 1>&2
                 nodetool status | grep Datacenter 1>&2
                 exit 2
         fi
 fi
 
-rowFormat="%s\n"
+
+rowFormat="%-20s %-20s\n"
 
 nodetool status \
 | ( if [ x"$datacenter" == x ]; then cat; else sed -n "/Datacenter: $datacenter/,/Datacenter:/p"; fi ) \
 | sed -e 's:[^0-9.]*\([0-9.]*\).*:\1:' \
 | grep '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*' \
 | (
-        while read localIp ; do 
-                printf "$rowFormat" $localIp 
-        done
+	while read localIp ; do 
+		printf "$rowFormat" $localIp 
+	done
 ) | col -b
+
 

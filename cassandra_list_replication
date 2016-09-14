@@ -1,0 +1,26 @@
+
+cqlsh_script=${cqlsh_script:-$(default=cassandra_cqlsh; printf '%s: ' "cqlsh_script? ($default)" >/dev/tty; read resp; if [ x"$resp" == x ]; then echo $default; else echo $resp; fi)}
+
+$cqlsh_script -e 'select strategy_options, keyspace_name from system.schema_keyspaces ;' | grep ' | ' | grep -v '| keyspace_name' | sort
+
+#
+# Output:
+#             {"Analytics":"1"} |                            cfs
+#             {"Analytics":"1"} |                    cfs_archive
+#             {"Analytics":"1"} |                   dse_security
+#             {"Analytics":"3"} |                         iv_rpt
+#             {"Analytics":"3"} |            predictive_workload
+#             {"Analytics":"3"} |  predictive_workload_framework
+#             {"Analytics":"3"} | predictive_workload_historical
+#             {"Analytics":"3"} | predictive_workload_normalized
+#                            {} |                     dse_system
+#    {"replication_factor":"2"} |                  system_traces
+#  {"Solr":"1","Analytics":"3"} |                       dse_perf
+#  {"Solr":"1","Analytics":"3"} |                  HiveMetaStore
+#  {"Solr":"1","Analytics":"3"} |  predictive_workload_reference
+#  {"Solr":"1","Analytics":"3"} |                    system_auth
+#  {"Solr":"2","Analytics":"3"} |                          iv_mt
+#  {"Solr":"2","Analytics":"3"} |     predictive_workload_report
+#                            {} |                     solr_admin
+#                            {} |                         system
+# 

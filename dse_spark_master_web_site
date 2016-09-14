@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+dsetool sparkmaster | sed -e 's/spark:\(.*\):.*/http:\1:7080/' 

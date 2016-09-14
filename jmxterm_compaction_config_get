@@ -1,0 +1,9 @@
+
+
+( tee /dev/tty | java -jar ~/jmxterm-1.0.0-SNAPSHOT-uber.jar --url 127.0.0.1:7199 ) <</EOF
+domain org.apache.cassandra.db
+bean type=CompactionManager
+get CoreCompactorThreads
+get MaximumCompactorThreads
+/EOF
+

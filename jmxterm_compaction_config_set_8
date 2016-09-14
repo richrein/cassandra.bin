@@ -1,0 +1,54 @@
+
+# Example of setting compaction to 8 minimum compacore threads
+
+
+CoreCompactorThreads=${CoreCompactorThreads:-8}
+MaximumCompactorThreads=${MaximumCompactorThreads:-8}
+
+echo CoreCompactorThreads=$CoreCompactorThreads, MaximumCompactorThreads=$MaximumCompactorThreads
+
+( tee /dev/tty | java -jar ~/jmxterm-1.0.0-SNAPSHOT-uber.jar --url 127.0.0.1:7199 ) <</EOF
+domain org.apache.cassandra.db
+bean type=CompactionManager
+get CoreCompactorThreads
+set CoreCompactorThreads "$CoreCompactorThreads"
+get CoreCompactorThreads
+get MaximumCompactorThreads
+set MaximumCompactorThreads "$MaximumCompactorThreads"
+get MaximumCompactorThreads
+/EOF
+
+
+# 
+# $>domain org.apache.cassandra.db
+# #domain is set to org.apache.cassandra.db
+# $>bean type=CompactionManager
+# #bean is set to org.apache.cassandra.db:type=CompactionManager
+# $>get CoreCompactorThreads
+# #mbean = org.apache.cassandra.db:type=CompactionManager:
+# CoreCompactorThreads = 0;
+# 
+# $>domain org.apache.cassandra.db
+# #domain is set to org.apache.cassandra.db
+# $>bean type=CompactionManager
+# #bean is set to org.apache.cassandra.db:type=CompactionManager
+# $>get CoreCompactorThreads
+# #mbean = org.apache.cassandra.db:type=CompactionManager:
+# CoreCompactorThreads = 0;
+# 
+# $>set CoreCompactorThreads 8
+# #Value of attribute CoreCompactorThreads is set to 8
+# $>get CoreCompactorThreads
+# #mbean = org.apache.cassandra.db:type=CompactionManager:
+# CoreCompactorThreads = 8;
+# 
+# $>get MaximumCompactorThreads
+# #mbean = org.apache.cassandra.db:type=CompactionManager:
+# MaximumCompactorThreads = 1;
+# 
+# $>set MaximumCompactorThreads 8
+# #Value of attribute MaximumCompactorThreads is set to 8
+# $>get MaximumCompactorThreads
+# #mbean = org.apache.cassandra.db:type=CompactionManager:
+# MaximumCompactorThreads = 8;
+# 

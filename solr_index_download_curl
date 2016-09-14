@@ -9,7 +9,7 @@ user=":"
 #user="myuser:mypassword"
 
 ipaddr=$(ip_address_private)
-#ipaddr="56.79.80.64"
+#ipaddr="66.79.80.64"
 
 core="x.y"
 #core="mykeyspace.mytable"
@@ -23,3 +23,11 @@ set -x
 :
 : Download the schema to edit
 curl -u "$user" "http://$ipaddr:8983/solr/$core/admin/file?file=schema.xml&contentType=text/xml;charset=utf-8"
+
+exit 0 
+
+
+# Notes
+#curl "http://$ipaddr:8983/solr/resource/$core/admin/files?file=schema.xml" --data-binary @schema.xml -H 'Content-type:text/xml; charset=utf-8'
+#curl -u $user http://$ipaddr:8983/solr/resource/$core/admin/files?file=schema.xml --data-binary @schema.xml -H 'Content-type:text/xml; charset=utf-8'
+#curl -u $user http://$ipaddr:8983/solr/#/$core/admin/files?file=schema.xml --data-binary @schema.xml -H 'Content-type:text/xml; charset=utf-8'

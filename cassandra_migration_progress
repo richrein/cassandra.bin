@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 DATADIRNAME='/Users/richrein/dse'
 cassandra_nodes_up_count 2>/dev/null

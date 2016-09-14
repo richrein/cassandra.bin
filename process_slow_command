@@ -1,6 +1,12 @@
 #!/usr/bin/env sudo bash
 
+#
 # process_slow_pids `process_pids_find "$@"`
+
+# Periodically pause a list of processes
+#
+# Uses SIGSTOP and SIGCONT to simulate insufficient CPU
+#
 
 trace_cmd () {
 	cmd="$1"; shift

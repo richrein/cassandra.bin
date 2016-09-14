@@ -12,9 +12,12 @@ if [ x"$password" == x ]; then printf "password: "; read -s password; echo ''; i
 # Curl reference
 # -sS no progress but show errors
 # -k save and use server certs for https
-
+curl -sS -k -X POST -d "{\"username\":\"$username\", \"password\":\"$password\"}" "https://$ipaddr:$ipport/login"
+echo 'sss'
 opscenter_session=$(curl -sS -k -X POST -d "{\"username\":\"$username\", \"password\":\"$password\"}" "https://$ipaddr:$ipport/login" | sed -e 's/{"[^"]*"[:" ]*\([^"]*\)"}/\1/')
+echo $opscenter_session
 # echo opscenter_session: $opscenter_session  # {"sessionid": "a3117e86acc7374f2a7d74e8e222f470"}
+if [ x"$opscenter_session" == x ]; then   echo Login Failed: $opscenter_session; fi
 
 print_dashboard_presets () {
 	echo "id                                     preset"
@@ -30,7 +33,6 @@ delete_dashboard_preset() {
 	echo deleting "$preset_id"
 	curl -sS -k -H "opscenter-session: $opscenter_session" -X DELETE "https://$ipaddr:$ipport/6005/rc/dashboard_presets/$preset_id" 
 }
-
 
 if [ $(print_dashboard_presets | wc -l) == 1 ]; then echo bad user + password. ; exit 1; fi
 
