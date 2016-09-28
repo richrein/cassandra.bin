@@ -11,6 +11,10 @@
 #
 # TODO - rsync -e ssh for security. Courtesy Matt Atwater
 # TODO - don't backup the live table folder then remove the "errcode=0; ;;" 2 uses below.
+# TODO - Capture list of keyspaces
+# TODO - Capture each keyspace > Keyspace_name_schema.cql
+# TODO - Capture hostname, hostname -i, date
+#
 #
 # Planned change
 # Compactions and write path continuously change the files to be rsynced. Rsync detects this and after completing the backup, returns errors which I replace with a 0. See
