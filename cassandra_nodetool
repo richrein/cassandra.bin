@@ -7,5 +7,5 @@
 
 scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH" # allow invokation of related scripts in this dir
 
-exec nodetool --host 127.0.0.1 "$@"
+exec nodetool --host $(ip_address_private) "$@"
 
