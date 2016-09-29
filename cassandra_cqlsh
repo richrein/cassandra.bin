@@ -9,5 +9,8 @@
 scriptdir=`dirname "$BASH_SOURCE"`
 PATH="$scriptdir:$PATH"
 
-exec cqlsh `ip_address_private` "$@"
+if [ x$cqlsh_username != x ]; then uflag="-u"; fi
+if [ x$cqlsh_password != x ]; then pflag="-p"; fi
+
+exec cqlsh $uflag $cqlsh_username $pflag $cqlsh_password $(ip_address_private) "$@"
 
