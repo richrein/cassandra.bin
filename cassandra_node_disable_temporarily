@@ -27,3 +27,6 @@ cassandra_nodetool disablebinary "$@"		# Disable native transport (binary protoc
 # cassandra_nodetool disablehintsfordc "$@"	# Disable hints for a data center
 
 # warning: add disabling streaming and binary protocol
+
+sync
+sync
