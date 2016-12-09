@@ -17,7 +17,13 @@
 # Typically you will enable both disablethrift and disablegossip together.
 
 trace_cmd=true
-cassandra_nodetool disablegossip "$@"
-cassandra_nodetool disablethrift "$@"
+cassandra_nodetool disablegossip "$@"		# Disable gossip (effectively marking the node down)
+cassandra_nodetool disablethrift "$@"		# Disable thrift server
+cassandra_nodetool disablebinary "$@"		# Disable native transport (binary protocol)
+
+# cassandra_nodetool disableautocompaction "$@"	# Disable autocompaction for the given keyspace and table
+# cassandra_nodetool disablebackup "$@"		# Disable incremental backup
+# cassandra_nodetool disablehandoff "$@"	# Disable storing hinted handoffs
+# cassandra_nodetool disablehintsfordc "$@"	# Disable hints for a data center
 
 # warning: add disabling streaming and binary protocol
