@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#
+# Script to fill in paramenters like host and password
+# The plan is to lookup an encyrpted password in directory ~/.cassandra_cqlsh/user
+#
+
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH" # allow invokation of related scripts in this dir
+
+cassandra_nodetool 2>1 | grep "$@"
