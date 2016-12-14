@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Use nodetool to disable Cassandra only on a specific node.
-# from: http://www.jointhegrid.com/highperfcassandra/?cat=10
 
 # There are times when you would like a Cassandra node to stop receiving requests or appear like it is down to outside clients.
 # You may want to use this to disable a node and adjust your log4j properties for more debugging,
@@ -13,8 +12,8 @@
 # Cassandra nodes gossip to each other and maintain a state of the cluster.
 # By disabling gossip other Cassandra nodes will stop forwarding read and write requests to this node 
 # because they will believe the node is down. Client using thrift will still be able to connect to a node in this state.
+# Disablebinary disables the client port 9042 which prevents clients from connecting to this node. 
 # Disablethrift disables the client port 9160 which prevents clients from connecting to this node. 
-# Typically you will enable both disablethrift and disablegossip together.
 
 trace_cmd=true
 cassandra_nodetool disablegossip "$@"		# Disable gossip (effectively marking the node down)
@@ -25,8 +24,12 @@ cassandra_nodetool disablebinary "$@"		# Disable native transport (binary protoc
 # cassandra_nodetool disablebackup "$@"		# Disable incremental backup
 # cassandra_nodetool disablehandoff "$@"	# Disable storing hinted handoffs
 # cassandra_nodetool disablehintsfordc "$@"	# Disable hints for a data center
+# warning: test and add disabling streaming and binary protocol if needed
 
-# warning: add disabling streaming and binary protocol
+cassandra_nodetool drain "$@"			# In theory, this should be the only request needed, but different versions have different issues justifying the rest of the lines in this file.
+# sleep 300					# If flush is interrupted, manually perform sleep for 5 minutes to wait for all data to get flushed.
 
-sync
-sync
+cassandra_nodetool flush "$@"			# Empty the memtables and pending commit log changes into sstables
+# sleep 300					# If flush is interrupted, manually perform sleep for 5 minutes to wait for all data to get flushed.
+
+sync; sync					# Force Linux all cached file data to disk. The second sync waits.
