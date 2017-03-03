@@ -1,0 +1,17 @@
+
+
+#
+# Rich Rein 2017 Apache 2.0 license
+#
+# add cassandra.bin to bashrc path
+#
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH";
+
+if [ ! -f "$HOME/.bashrc" ]; then 
+	echo missing "$HOME/.bashrc"
+	exit
+fi
+
+echo 'PATH="$PATH:$HOME/cassandra.bin"' >> "$HOME/.bashrc"
+
+
