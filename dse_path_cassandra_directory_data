@@ -3,7 +3,7 @@
 for directory in $(dse_path_cassandra_directory_suspect_list)
 do
 	data_directory="$directory/data"
-        if [ -d "$data_directory" ]; then echo "$data_directory"; exit 0; fi
+        if [ -d "$data_directory/system" ]; then echo "$data_directory"; exit 0; fi
 done
 echo NOTFOUND; exit 99;
 
