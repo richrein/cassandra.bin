@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Try to find it in the well known directories
+found=false
+for directory in "/mnt/cassandra" "/mnt/ephemeral/cassandra" "$HOME/dse" "/var/lib/cassandra"
+do
+        if [ -d "$directory" ]; then echo "$directory"; found=true; fi
+done
+
+# If not found, scan the file system
+if [ $found == false ]; then
+	find / -wholename '*cassandra' 
+	errorcode=$?;
+	if [ $errorcode != 0 ]; then echo NOTFOUND; exit 99; fi
+fi
+exit 0
+
