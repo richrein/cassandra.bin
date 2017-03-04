@@ -2,7 +2,7 @@
 
 # Try to find it in the well known directories
 found=false
-for directory in "/mnt/cassandra" "/mnt/ephemeral/cassandra" "$HOME/dse" "/var/lib/cassandra" "/mnt/raid/cassandra/data" "/mnt/ssd/cassandra/data"
+for directory in "/mnt/cassandra" "/mnt/ephemeral/cassandra" "$HOME/dse" "/var/lib/cassandra" "/mnt/raid/cassandra" "/mnt/ssd/cassandra"
 do
         if [ -d "$directory" ]; then echo "$directory"; found=true; fi
 done
