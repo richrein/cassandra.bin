@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-for directory in "/mnt/cassandra", "$HOME/dse"
+for directory in $(dse_path_cassandra_directory_suspect_list)
 do
-        directory="$directory/saved_caches"
-        if [ -d "$directory" ]; then echo "$directory"; exit 0; fi
+	saved_caches_directory="$directory/saved_caches"
+        if [ -d "$saved_caches_directory" ]; then echo "$saved_caches_directory"; exit 0; fi
 done
 echo NOTFOUND; exit 99;
 
