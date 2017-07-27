@@ -19,7 +19,14 @@ case $OS_FLAVOR in
 	*) echo $OS_FLAVOR not supported; exit 1;;
 esac
 
-
+showProcess=false
+if [ x"$1" != x ]; then
+	if [ x"$1" = x-p ]; then
+		showProcess=true
+	else
+		echo "$1" is an unknown flag; exit 1;
+	fi
+fi
 
 showSeparator () {
 	echo "" 
@@ -122,5 +129,10 @@ showPort 10001	Hive Spark SQL Thrift Server
 showPort 50030	Hadoop Job Tracker website port
 showPort 50060	Hadoop Task Tracker website port
 
-showSection	Processes
-showProcesses 8888 50031 61620   9042 9160 7000 7001 7199   8983 8984   7077 4040 7080 7081    5598 5599   8012 9000 9290 10000 10001 50030 50060
+if [ $showProcess == true ]; then
+	showSection	Processes
+	showProcesses 8888 50031 61620   9042 9160 7000 7001 7199   8983 8984   7077 4040 7080 7081    5598 5599   8012 9000 9290 10000 10001 50030 50060
+else
+	echo ""
+	echo "To show proccesses use -p flag"
+fi
