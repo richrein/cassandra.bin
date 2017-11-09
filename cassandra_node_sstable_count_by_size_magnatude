@@ -16,7 +16,7 @@ count_db_files () {
         file_count=$(find . -name '*.db' -type f -size +${min_size} -size -${max_size} -print | grep -v '/snapshots/' | grep -v '/backups/' | wc -l )
 
         printf '%20s %20s %20s\n' $min_size $max_size $file_count
-        find . -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print | grep -v '/snapshots/' | grep -v '/backups/' | head -n 10
+        # find . -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print | grep -v '/snapshots/' | grep -v '/backups/' | head -n 10
 
 }
 
