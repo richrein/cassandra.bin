@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Show cassandra cluster internal and external addresses
+# uses nodetool to get internal addresses and icanhazip.com for external addressses
+#
+
+# cassandra_node_sstable_count_by_size_magnatude [directory]
+
+if [ x"$1" != x ]; then
+        cd "$1"
+fi
+
+count_db_files () {
+        min_size=$1
+        max_size=$2
+        file_count=$(find . -name '*.db' -type f -size +${min_size} -size -${max_size} -print | grep -v '/snapshots/' | grep -v '/backups/' | wc -l )
+
+        printf '%20s %20s %20s\n' $min_size $max_size $file_count
+        find . -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print | grep -v '/snapshots/' | grep -v '/backups/' | head -n 10
+
+}
+
+count_db_files 0                9
+count_db_files 10               99
+count_db_files 100              999
+count_db_files 1000             9999
+count_db_files 10000            99999
+count_db_files 100000           999999
+count_db_files 1000000          9999999
+count_db_files 10000000         99999999
+count_db_files 100000000        999999999
+count_db_files 1000000000       9999999999
+count_db_files 10000000000      99999999999
+count_db_files 100000000000     999999999999
+count_db_files 1000000000000    9999999999999
+count_db_files 10000000000000   99999999999999
+count_db_files 100000000000000  999999999999999
+
+
