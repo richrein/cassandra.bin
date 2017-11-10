@@ -6,17 +6,22 @@
 
 # cassandra_node_sstable_count_by_size_magnatude [directory]
 
-if [ x"$1" != x ]; then
-        cd "$1"
-fi
+list_file_sample=0
+if [ x"$1" == "x-s" ]; then list_file_sample=1; shift; fi
+if [ x"$1" != x ]; then cd "$1"; fi
 
 count_db_files () {
         min_size=$1
         max_size=$2
+        #set -x 
         file_count=$(find . -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print | grep -v '/snapshots/' | grep -v '/backups/' | wc -l )
 
         printf '%20s %20s %20s\n' $min_size $max_size $file_count
-        # find . -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print | grep -v '/snapshots/' | grep -v '/backups/' | head -n 10
+	if [ 0 != $file_count ]; then
+		if [ $list_file_sample != 0 ]; then
+			find $(pwd) -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print | grep -v '/snapshots/' | grep -v '/backups/' | head -n 1
+		fi
+	fi
 
 }
 
@@ -35,5 +40,6 @@ count_db_files 100000000000     999999999999
 count_db_files 1000000000000    9999999999999
 count_db_files 10000000000000   99999999999999
 count_db_files 100000000000000  99999999999999999
+count_db_files 0		99999999999999999
 
 
