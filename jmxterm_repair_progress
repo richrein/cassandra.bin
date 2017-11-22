@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# allow invokation of related scripts in this dir
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH"
+
+# jmxterm examples: https://cwiki.apache.org/confluence/display/KAFKA/jmxterm+quickstart
+# http://cassandra.apache.org/doc/latest/operating/repair.html
+
+# Cassandra Schema: http://cassandra.apache.org/doc/latest/operating/metrics.html
+# Metric Name org.apache.cassandra.metrics.Table.<MetricName>.<Keyspace>.<Table>
+# Bean org.apache.cassandra.metrics:type=Table keyspace=<Keyspace> scope=<Table> name=<MetricName>
+
+# PercentRepaired				Gauge<Double>	Percent of table data that is repaired on disk.
+# ValidationTime				Timer	Time spent doing validation compaction during repair.
+# SyncTime						Timer	Time spent doing streaming during repair.
+# AnticompactionTime			Timer	Time spent anticompacting before a consistent repair.
+# BytesMutatedAnticompaction	Counter	How many bytes we avoided anticompacting because the sstable was fully contained in the repaired range.
+# MutatedAnticompactionGauge	Gauge<Double>	Ratio of bytes mutated vs total bytes repaired.
+
+
+echo Percent all repairs complete
+( tee /dev/tty | java -jar $scriptdir/jmxterm-1.0.0-SNAPSHOT-uber.jar --url 127.0.0.1:7199 ) <</EOF
+get -b org.apache.cassandra.metrics:name=PercentRepaired,type=Table Value
+/EOF
+
+exit 
+
+Get PercentRepaired for all tables
+get -b org.apache.cassandra.metrics:name=PercentRepaired,type=Table Value
+
+Get PercentRepaired for keyspace:integrations
+get -b org.apache.cassandra.metrics:keyspace=integrations,name=PercentRepaired,scope=connection,type=ColumnFamily Value
+get -b org.apache.cassandra.metrics:keyspace=integrations,name=PercentRepaired,scope=connection,type=Table Value

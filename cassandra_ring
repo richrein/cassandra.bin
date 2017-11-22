@@ -4,7 +4,8 @@
 # Script to dump node information with node name and address
 #
 
-cassandra_nodetool ring | while read node_ipaddr rack_name status state load_size unit owns tokens ; do 
+#cassandra_nodetool ring | while read node_ipaddr rack_name status state load_size unit owns tokens ; do 
+nodetool -h 127.0.0.2 ring | while read node_ipaddr rack_name status state load_size unit owns tokens ; do 
 	# blank line
 	if [ x"$node_ipaddr" = x ]; then printf '\n'; continue; fi
 
