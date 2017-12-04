@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+#
+
+# 
+[root@pprddapcau16642 ~]# cat io_perm.sh 
+val1=`nodetool compactionstats | grep Compaction | awk '{sum+=$4} END {print sum}'`
+sleep 60; 
+val2=`nodetool compactionstats | grep Compaction | awk '{sum+=$4} END {print sum}'`; 
+let val3="($val2-$val1)/(1024*1024)"
+echo $val3
