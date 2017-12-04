@@ -2,8 +2,8 @@
 #
 #
 
-# 
-[root@pprddapcau16642 ~]# cat io_perm.sh 
+# cassandra_sstable_compaction_byte_rate
+
 val1=`nodetool compactionstats | grep Compaction | awk '{sum+=$4} END {print sum}'`
 sleep 60; 
 val2=`nodetool compactionstats | grep Compaction | awk '{sum+=$4} END {print sum}'`; 
