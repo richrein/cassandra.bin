@@ -32,7 +32,7 @@ time $SUDO dd if=/dev/zero of="$dirName/loadtest.removeme" bs=$BLOCKSIZE count=$
 :
 : Read test
 :
-time $SUDO dd if="$dirName/loadtest.removeme" bs=$BLOCKSIZE count=$BLOCKCOUNT iflag=fullblock iflag=direct >&- # always use  direct io is supported by your dd
+time $SUDO dd if="$dirName/loadtest.removeme" of=/dev/null bs=$BLOCKSIZE count=$BLOCKCOUNT iflag=fullblock iflag=direct >&- # always use  direct io is supported by your dd
 
 
 # Todo:
