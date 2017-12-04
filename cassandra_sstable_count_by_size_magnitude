@@ -6,6 +6,8 @@
 
 # cassandra_node_sstable_count_by_size_magnatude [directory]
 
+[ "root" != "$USER" ] && exec sudo $0 "$@"
+
 list_file_sample=0
 if [ x"$1" == "x-s" ]; then list_file_sample=1; shift; fi
 if [ x"$1" != x ]; then cd "$1"; fi
