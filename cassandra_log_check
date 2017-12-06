@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#
+
+[ "root" != "$USER" ] && exec sudo $0 "$@"; if [[ $EUID -ne 0 ]]; then echo "Error: Run $(basename $0) as root"; exit 1; fi # make sure running as root
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH" # allow invokation of related scripts in this dir
+
+logPath=$(dse_path_cassandra_log_current)
+
+egrep "ERROR|ERR|WARN|by_version" "$logPath"
