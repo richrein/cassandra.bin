@@ -25,6 +25,16 @@ get -b org.apache.cassandra.metrics:name=PercentRepaired,type=Table Value
 
 exit 
 
+Example out:
+$ jmxterm_repair_progress 
+Percent all repairs complete
+get -b org.apache.cassandra.metrics:name=PercentRepaired,type=Table Value
+Welcome to JMX terminal. Type "help" for available commands.
+$>get -b org.apache.cassandra.metrics:name=PercentRepaired,type=Table Value
+#mbean = org.apache.cassandra.metrics:name=PercentRepaired,type=Table:
+Value = 100.0;
+$>
+
 Get PercentRepaired for all tables
 get -b org.apache.cassandra.metrics:name=PercentRepaired,type=Table Value
 
