@@ -8,7 +8,9 @@
 
 [ "root" != "$USER" ] && exec sudo $0 "$@"
 
+showall=false
 list_file_sample=0
+
 if [ x"$1" == "x-s" ]; then list_file_sample=1; shift; fi
 if [ x"$1" != x ]; then cd "$1"; fi
 
@@ -16,22 +18,31 @@ count_db_files () {
         min_size=$1
         max_size=$2
         #set -x 
-        file_count=$(find . -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print | grep -v '/snapshots/' | grep -v '/backups/' | wc -l )
+        file_count=$(find . -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print 2>/dev/null | grep -v '/snapshots/' | grep -v '/backups/' | wc -l )
 
-        printf '%20s %20s %20s\n' $min_size $max_size $file_count
-	if [ 0 != $file_count ]; then
+	if [ 0 == $file_count ]; then
+		if [ $showall == true ]; then
+        		printf '%20s %20s %20s\n' $min_size $max_size $file_count
+		fi
+	else
+        	printf '%20s %20s %20s\n' $min_size $max_size $file_count
 		if [ $list_file_sample != 0 ]; then
-			find $(pwd) -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print | grep -v '/snapshots/' | grep -v '/backups/' | head -n 1
+			find $(pwd) -name '*Data.db' -type f -size +${min_size}c -size -${max_size}c -print 2>/dev/null | grep -v '/snapshots/' | grep -v '/backups/' | head -n 1
 		fi
 	fi
 
 }
 
-lower=1
+printf '%20s %20s %20s\n' 'From Size' 'To Size' 'Count'
+min=1
+max=99999999999999999
+lower=$min
 power=2 # for 2x and 10x
-until [  $lower -gt 99999999999999999 ]; do
+until [  $lower -gt $max ]; do
 	upper=$((power*lower-1))
 	count_db_files $lower $upper
 	lower=$((upper+1))
 done
 
+printf '%20s %20s %20s\n' '--------------------' '--------------------' '--------------------'
+count_db_files $min $upper
