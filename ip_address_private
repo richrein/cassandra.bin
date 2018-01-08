@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x 
+
 # allow invokation of related scripts in this dir
 scriptdir=`dirname "$BASH_SOURCE"`
 PATH="$scriptdir:$PATH"

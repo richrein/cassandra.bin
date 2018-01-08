@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+#
+# Rich Rein 2015, 2016 Apache 2.0 license
+#
+
+# make sure running as root
+[ "root" != "$USER" ] && exec sudo $0 "$@"
+if [[ $EUID -ne 0 ]]; then echo "Error: Run $(basename $0) as root"; exit 1; fi
+
+# allow invokation of related scripts in this dir
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH"
+
+OS_FLAVOR=$(os_flavor)
+case $OS_FLAVOR in
+	osx) 	;;
+	ubuntu) ;;
+    linux) ;;
+	*) echo $OS_FLAVOR not supported; exit 1;;
+esac
+
+if [ ! -f /proc/cpuinfo ]; then echo unable to read /proc/cpuinfo; fi
+processors=$(cat /proc/cpuinfo | grep ^processor | wc -l)
+pcid_count=$(cat /proc/cpuinfo | grep ' pcid ' | wc -l)
+
+if [ x != x$pcid_count ]; then
+	if [ $pcid_count > 0 ]; then
+		printf '%s CPUs have Processor-Context ID (PCID) out of %s CPUs.\n' $pcid_count $processors
+	fi
+fi
