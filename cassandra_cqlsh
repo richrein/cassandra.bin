@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 #
 # Script to fill in paramenters like host and password
 # The plan is to lookup an encyrpted password in directory ~/.cassandra_cqlsh/user
