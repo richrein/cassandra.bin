@@ -9,6 +9,8 @@
 BLOCKSIZE=10240000
 BLOCKCOUNT=150
 SUDO=sudo
+DEVICE=/dev/urandom
+#DEVICE=/dev/zero
 
 export thisCommand=`basename $0`
 
@@ -28,7 +30,7 @@ set -x
 :
 : Write test
 :
-time $SUDO dd if=/dev/zero of="$dirName/loadtest.removeme" bs=$BLOCKSIZE count=$BLOCKCOUNT iflag=fullblock oflag=direct # always use  direct io is supported by your dd
+time $SUDO dd if="$DEVICE" of="$dirName/loadtest.removeme" bs=$BLOCKSIZE count=$BLOCKCOUNT iflag=fullblock oflag=direct # always use  direct io is supported by your dd
 :
 : Read test
 :
