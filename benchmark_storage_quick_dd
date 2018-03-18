@@ -9,8 +9,8 @@
 BLOCKSIZE=10240000
 BLOCKCOUNT=150
 SUDO=sudo
-DEVICE=/dev/urandom
-#DEVICE=/dev/zero
+#DEVICE=/dev/urandom    # much slower that /dev/zero
+DEVICE=/dev/zero
 
 export thisCommand=`basename $0`
 
