@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+#
+# Trivial disk read test to measure latency
+#
+
+# Al Tolbey's page - https://tobert.github.io/post/2015-01-22-ioping.html
+# Man - https://www.systutorials.com/docs/linux/man/1-ioping/ 
+
+# test should be big enough to flood the buffering of the system and use the direct io flag if you dd supports ig
+BLOCKSIZE=10240000
+BLOCKCOUNT=10
+#BLOCKCOUNT=150
+
+export thisCommand=`basename $0`
+
+if [ x"$1" == x ]; then
+	echo "Error: missing directory name"
+	echo "Usage: $thisCommand dir"
+	exit 1
+else
+	dirName="$1"; shift
+	if [ ! -d "$dirName" ]; then echo "No such dir: $dirName"; exit 1; fi
+fi
+
+
+set -x
+
+:
+: Read test
+:
+ioping -c $BLOCKCOUNT -s $BLOCKSIZE -D "$dirName"
+
+# -D option not supported on OSX. Required for O_DIRECT
+
+# Todo:
+# From: http://askubuntu.com/questions/122857/can-i-copy-large-files-faster-without-using-the-file-cache
+#
+# There is the nocache utility, which can prepended to a command like ionice and nice. 
+# It works by preloading a library which adds posix_fadvise with the POSIX_FADV_DONTNEED flag to any open calls.
+#
+# In simple terms, it advises the kernel that caching is not needed for that particular file; the kernel will then 
+# normally not cache the file. See here for the technical details.
+#
+# It does wonders for any huge copy jobs, e. g. if you want to backup a multi terabyte disk in the background
+#  with the least possible impact on you running system, you can do something along
+#  > nice -n19 ionice -c3 nocache cp -a /vol /vol2.
+#
+# A package will be available in Ubuntu 13.10 and up. 
+# If you are on a previous release you can either install the 13.10 package or opt for this 12.04 backport by François Marier.
+# See: https://launchpad.net/ubuntu/+source/nocache
+# And: https://launchpad.net/~fmarier/+archive/ubuntu/ppa/+index?field.series_filter=precise&batch=75&memo=75&start=75
+
