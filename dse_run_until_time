@@ -1,0 +1,60 @@
+#!/usr/bin/env sudo bash
+
+# allow invokation of related scripts in this dir
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH"
+
+OS_FLAVOR=$(os_flavor)
+case $OS_FLAVOR in
+	osx) 	;;
+	*) echo $OS_FLAVOR not supported; exit 1;;
+esac
+
+usage_error() {
+	echo "$(basename "$0") Error: $1"
+	if [ $OS_FLAVOR == osx ]; then
+		echo 'Example:'
+		echo 'Run dse until 5pm'
+		echo "\$ `basename $0` 1700"
+	fi	
+	exit 98
+}
+
+if [ x"$1" == x ]; then
+	usage_error "Missing millitary time"
+fi
+
+trap "set -x; nodetool flush; sleep 2; nodetool drain; sleep 10; dse cassandra-stop; sleep 10; rm /Users/richrein/dse/commitlog/*; exit" 0 # 0 1 2 3 15
+
+set -x
+:
+: Remove commit log
+:
+rm /Users/richrein/dse/commitlog/*
+:
+: start DSE
+:
+sudo -u $SUDO_USER dse cassandra
+:
+:
+:
+sleep 180
+dse_ip_port_status
+:
+: wait until time
+:
+sleep_until_time $1
+:
+: stop DSE
+:
+nodetool flush
+sleep 2
+nodetool drain
+sleep 10
+dse cassandra-stop
+sleep 10
+:
+: remove commit log
+:
+rm /Users/richrein/dse/commitlog/*
+set -x
+echo -en "\007"  # Beep

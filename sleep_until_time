@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+OS_FLAVOR=$(os_flavor)
+case $OS_FLAVOR in
+	osx) 	;;
+	*) echo $OS_FLAVOR not supported; exit 1;;
+esac
+
+if [ x"$1" == x ]; then
+	echo $(basename "$0") Error: Missing date string
+	if [ $OS_FLAVOR == osx ]; then
+		echo 'Example:'
+		echo 'Sleep until 5pm'
+		echo "\$ `basename $0` 1700"
+	fi	
+	exit 99
+fi
+
+if [ $OS_FLAVOR == osx ]; then
+	(
+		sleep_seconds=$(expr $(date -j -f '%H%M' $1 +%s) - $(date +%s) ); 
+		if [ 0 -ge $sleep_seconds ]; then
+			echo Time incorrect. Should by hhmm and after the current time.
+			exit 99
+		fi
+		echo Sleeping $sleep_seconds seconds until $1...
+		set -x;
+		sleep $sleep_seconds
+
+	)
+fi

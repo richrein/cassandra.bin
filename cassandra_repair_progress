@@ -1,0 +1,83 @@
+#!/bin/bash
+
+
+date +'%Y-%m-%d %H%M'
+for i in relationship_attribute index_by_type relationship_daily_index relationship_by_type entity_daily_index index_by_version entity relationship_by_version
+do
+   count=$(sudo cat /var/log/cassandra/system.log* | grep -i "received merkle tree for $i" | wc -l)
+   printf "%25s %3s %3s\n" $i $count $((count*100/256))%
+done
+
+exit
+
+printf "%30s\n" "Compaction stats:"
+printf "%30s\n" "================"
+nodetool compactionstats
+printf "%30s \n" "TP stats:"
+printf "%30s\n" "================"
+
+nodetool tpstats
+nodetool netstats
+nodetool gcstats
+#ii| awk {'print sum+=$4'} ; sleep 60; nodetool compactionstats | awk {'print sum+=$4'}
+#while true; do date; diff <(nodetool -h localhost netstats) <(sleep 5 && nodetool -h localhost netstats); done
+exit
+
+
+
+
+
+
+if [ x"$1" == x ]; then
+	dir=$(pwd)
+else
+	dir="$1"; shift
+	if [ ! -d "$dir" ]; then
+		echo Error: "$dir" is not a directory; exit 99;
+	fi
+fi
+
+
+#dir='/Users/richrein/dse/data'
+printf "%24s   %s\n" "total bytes" "Table directory" 
+du -sb "$dir/"*/* | (while read size table ; do printf '%24d   %s\n' $size "$table"; done ) | sort -nk1 | tail -n $lines
+
+grep "reaming_socket_timeout_in\|phi_convict_threshold\|compaction_throughput_mb_per_sec\|concurrent_compactors" cassandra.yaml
+cat /var/log/cassandra/system.log |grep -i repair | grep -i synced 
+
+grep "Repair session" recent-repair | grep "finished" | wc -l
+
+Starting
+Monitoring
+When to add another	
+
+Nodetool repair -pr
+
+while true; do date; diff <(nodetool -h localhost netstats) <(sleep 5 && nodetool -h localhost netstats); done
+    compactionstats              Print statistics on compactions
+    gcstats                      Print GC Statistics
+    netstats                     Print network information on provided host (connecting node by default)
+    tablestats                   Print statistics on tables
+    tpstats                      Print usage statistics of thread pools
+
+
+
+
+
+
+
+Monitoring  
+
+nodetool compactionstats | awk {'print sum+=$4'} ; sleep 60; nodetool compactionstats | awk {'print sum+=$4'}
+
+
+Script
+While 2 hour (
+last.log=current.log
+current.log=time.repair.log
+tail -F xxx | grep repair > time.repair.log
+lines.changed=$(diff $last.log $current.log | wc -l)
+success=$(grep -i "session completed successfully" $current.log)
+echo progress count = $lines.changed
+echo success=$success
+) | mailx 

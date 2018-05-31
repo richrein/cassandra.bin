@@ -11,6 +11,9 @@ esac
 if [ x"$1" == x ]; then
 	echo $(basename "$0") Error: Missing date string
 	if [ $OS_FLAVOR == osx ]; then
+		echo 'Syntax: '
+		echo "\$ `basename $0` [-v[+|-]val[ymwdHMS]]"
+		echo ''
 		echo 'Example:'
 		echo 'Get current time + 100 days in microseconds'
 		echo "\$ `basename $0` +100d"

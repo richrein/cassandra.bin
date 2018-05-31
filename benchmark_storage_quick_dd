@@ -3,6 +3,7 @@
 #
 # Trivial disk write and read test.
 # use FIO for a more useful test
+# see Brad's simpler FIO testscripts for https://github.com/ibspoof/cassandra-fio
 #
 
 # test should be big enough to flood the buffering of the system and use the direct io flag if you dd supports ig
