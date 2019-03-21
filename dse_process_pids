@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#
+# list the pid(s) for running DSE main process.
+#
+# Rich Rein 2019.03.21
+#
+
+trace_cmd () {
+	cmd="$1"; shift
+	echo "$cmd" "$@"
+	"$cmd" "$@"
+}
+
+ps aux | grep com.datastax.bdp | grep -v grep  | awk '{print $2}'
