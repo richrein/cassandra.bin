@@ -1,0 +1,59 @@
+#!/usr/bin/env sudo bash
+
+# process_slow_pids `process_pids_find "$@"`
+
+#
+# Pause a list of processes and restart when user presses return
+# 
+# Slowing DSE is done by hitting the DSE process with timed alternating signals SiGSTOP and SIGCONT
+# The process is aligned to modulo 60 minutes. 
+# Determine the DSE pid periodically incase it is restarted.
+#
+# Rich Rein 2019.03.20
+#
+
+trace_slow_fullspeed=true	
+trace_stop_start=false	
+minutes_to_slow=5
+seconds_to_sigstop=0.90
+seconds_to_sigcont=0.10
+was_stopped=88
+
+while [ 1 ]; do
+	# The pids for a command may change. Reaquire the list of pids every 5 seconds.
+
+	slowPids=$(ps aux | grep com.datastax.bdp | grep -v grep  | awk '{print $2}')
+
+	# Make sure DSE continues at full speed if the scipt is cancelled.
+	trap 'kill -SIGCONT $slowPids 2>/dev/null' EXIT
+
+	if [ x"$slowPids" = x ]; then echo DSE not running; exit 0; fi
+
+	minute=$(date '+%M' | sed -e 's/.*\(.\)/\1/')
+	minutes=$((minute/$minutes_to_slow))    
+	dostop=$(( $minutes % 2 ))
+
+	if [ $was_stopped != $dostop ]; then
+		was_stopped=$dostop
+		if [ $dostop == 0 ]; then
+			if [ $trace_slow_fullspeed == true ]; then echo "$(date)" - Start slowing DSE ; fi
+		else
+			if [ $trace_slow_fullspeed == true ]; then echo "$(date)" - Start full speed DSE ; fi
+		fi
+	fi
+
+	for i in {1..10}; do
+		# SIGSTOP and SIGCONT the processes to reduce CPU used 2>/dev/null
+	   	if [ $dostop == 0 ]; then
+			kill -SIGSTOP $slowPids 2>/dev/null;
+			if [ $trace_stop_start == true ]; then echo Stopping DSE at $(date) ; fi
+		fi
+		sleep $seconds_to_sigstop;
+
+		kill -SIGCONT $slowPids 2>/dev/null;
+	   	if [ $dostop == 0 ]; then
+			if [ $trace_stop_start == true ]; then echo Continuing DSE at $(date) ; fi
+		fi
+		sleep $seconds_to_sigcont;
+	done
+done
