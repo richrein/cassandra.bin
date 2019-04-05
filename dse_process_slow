@@ -1,16 +1,26 @@
 #!/usr/bin/env sudo bash
 
-# process_slow_pids `process_pids_find "$@"`
+# dse_process_slow 
 
 #
 # Pause a list of processes and restart when user presses return
 # 
-# Slowing DSE is done by hitting the DSE process with timed alternating signals SiGSTOP and SIGCONT
+# Slowing DSE process is slowed by hitting the DSE process with timed alternating signals SiGSTOP and SIGCONT.
 # The process is aligned to modulo 60 minutes. 
-# Determine the DSE pid periodically incase it is restarted.
+# Determine the DSE pid periodically in case it is restarted.
+
+# For general slow node testing a good starting point is 
+# seconds_to_sigstop=0.90
+# seconds_to_sigcont=0.10
+#
+# If testing Speculative Retry and Speculative Execution operations,
+# use a 1 second slow and 1 second fast pattern to better see the results in monitoring graphs.
+# seconds_to_sigstop=1
+# seconds_to_sigcont=1
 #
 # Rich Rein 2019.03.20
 #
+
 
 trace_slow_fullspeed=true	
 trace_stop_start=false	
