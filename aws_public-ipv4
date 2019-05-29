@@ -1,15 +1,15 @@
 #!/bin/bash
 
 #
-# Retrieve availability_zone from AWS instance
+# Retrieve public-ipv4 from AWS instance
 # rein 2016
 #
 # From: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 #
-availability_zone=$( curl --max-time 50000 --retry 12 --retry-delay 50000 http://169.254.169.254/latest/meta-data/public-ipv4 -s -S )
-if [ ! "$availability_zone" ]; then
+value=$( curl --max-time 50000 --retry 12 --retry-delay 50000 http://169.254.169.254/latest/meta-data/public-ipv4 -s -S )
+if [ ! "$value" ]; then
 	echo Unable to retrieve Instance Availability Zone from instance metadata server 1>&2
 	exit 99
 fi
 
-echo "$availability_zone"
+echo "$value"

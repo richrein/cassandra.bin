@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Retrieve availability_zone from AWS instance
+# Retrieve instance-type from AWS instance
 # rein 2016
 #
 # From: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
