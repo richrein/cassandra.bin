@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#
+# Retrieve availability_zone from AWS instance
+# rein 2016
+#
+# From: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
+#
+value=$( curl --max-time 50000 --retry 12 --retry-delay 50000 http://169.254.169.254/latest/meta-data/instance-type -s -S )
+if [ ! "$value" ]; then
+	echo Unable to retrieve Instance Availability Zone from instance metadata server 1>&2
+	exit 99
+fi
+
+echo "$value"
