@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+#
+# Rich Rein 2019 Apache 2.0 license
+#
+
+# allow invokation of related scripts in this dir
+scriptdir=`dirname "$BASH_SOURCE"`; PATH="$scriptdir:$PATH"
+
+OS_FLAVOR=$(os_flavor)
+case $OS_FLAVOR in
+	osx) 	;;
+	ubuntu) ;;
+    linux) ;;
+	*) echo $OS_FLAVOR not supported; exit 1;;
+esac
+
+verbose=false
+if [ x"$1" != x ]; then
+	if [ x"$1" = x-v ]; then
+		verbose=true
+		shift
+	fi
+fi
+
+ips="$(echo $(
+	(
+		for (( i=1; i <= "$#"; i++ )); do
+		    cluster="${!i}"
+		    ctool info $cluster
+		done
+	) | grep ' ip:' | sed -e 's/.*:\(.*\)/\1/' 
+) | sed -e 's/ /,/g' ) " 
+
+
+for (( i=1; i <= "$#"; i++ )); do
+    cluster="${!i}"
+	( if [ $verbose == true ]; then set -x; fi
+
+		ctool allow_access $cluster $ips
+	)
+done
+
