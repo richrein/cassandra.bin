@@ -5,7 +5,7 @@
 #
 # This is not a full network test to load or measure a network.
 # This is provides a quick sample of the minimum throughput of a single connection for a short amount of time.
-# Platform specifics improvement are avoided to keep the simple and quick to use.
+# Platform support specifics are avoided to keep the simple and quick to use.
 #
 # Cat is used to push as many bytes as possible thought a single ssh TCP/IP connection.
 # The dd utility is used to measure the amount of data received.
