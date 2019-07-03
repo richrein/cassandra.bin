@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
-
-#
+# 
 # Simple network bandwidth test
+# Rich Rein 2014-2019
+#
+# This is not a full network test to load or measure a network.
+# This is provides a quick sample of the minimum throughput of a single connection for a short amount of time.
+# Platform specifics improvement are avoided to keep the simple and quick to use.
+#
+# Cat is used to push as many bytes as possible thought a single ssh TCP/IP connection.
+# The dd utility is used to measure the amount of data received.
+# Random and disabled compression is used where possible to sample the raw network throughput.
 #
 
 export thisCommand=`basename $0`
 
 if [ x"$1" == x ]; then
 	echo "Error: missing remote user@hostname"
-	echo "Usage: $thisCommand file"
+	echo "Usage: $thisCommand user@hostname"
 	exit 1
 else
 	remoteLogin="$1"; shift
@@ -17,19 +25,23 @@ fi
 # 
 # Complete blocks in dd:
 # The dd utility is prone to reading short blocks from a network.
-# The solution is to use iflag=fullblock on the receiver (if the receiving dd recognizes it.)
+# The best solution is to use iflag=fullblock on the receiver (if the receiving dd recognizes it.)
 # Else, use a small receiving block size (bs or ibs) like 1024 to ensure there is enough buffered for each block read.
 # 
 blockSize=1024
+
+#
+# Use block count to increase the size of the test.
+#
 blockCount=10000
 #blockCount=1000000
 
 #
-# Data source.
+# Data source:
 # Use /dev/urandom if available, else /dev/null
 #
-dataSource-/dev/urandom
-#dataSource-/dev/null
+dataSource=/dev/urandom
+#dataSource=/dev/null
 
 set -x
 ssh -o "Compression no" "$remoteLogin" cat $dataSource | time dd of=/dev/null bs=$blockSize count=$blockCount
