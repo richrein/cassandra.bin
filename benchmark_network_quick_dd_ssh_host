@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # 
-# Simple network bandwidth test
+# Simple network bandwidth sanity test
 # Rich Rein 2014-2019
 #
 # This is not a full network test to load or measure a network.
 # This is provides a quick sample of the minimum throughput of a single connection for a short amount of time.
-# Platform support specifics are avoided to keep the simple and quick to use.
+# This is intended to be approximate. Round the throughput numbers and only consider the first digit and following zeros.
+# Platform support specifics are avoided to keep this tool simple and quick to use.
 #
 # Cat is used to push as many bytes as possible thought a single ssh TCP/IP connection.
 # The dd utility is used to measure the amount of data received.
