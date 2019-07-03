@@ -10,6 +10,8 @@
 # Cat is used to push as many bytes as possible thought a single ssh TCP/IP connection.
 # The dd utility is used to measure the amount of data received.
 # Random and disabled compression is used where possible to sample the raw network throughput.
+# If the throughput is high enough, sometimes /dev/urandom computations or small dd bs size. It these cases, 
+# it might be worth it to test again with /dev/zero and with iflag=fullblock with a larger blocksize.
 #
 
 export thisCommand=`basename $0`
@@ -41,7 +43,7 @@ blockCount=10000
 # Use /dev/urandom if available, else /dev/null
 #
 dataSource=/dev/urandom
-#dataSource=/dev/null
+#dataSource=/dev/zero
 
 set -x
 ssh -o "Compression no" "$remoteLogin" cat $dataSource | time dd of=/dev/null bs=$blockSize count=$blockCount
