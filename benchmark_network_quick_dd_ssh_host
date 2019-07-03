@@ -14,10 +14,10 @@ else
 	remoteLogin="$1"; shift
 fi
 
-blockSize=102400000
-blockCount=100
-#blockCount=10000
+blockSize=1024
+blockCount=10000
+#blockCount=1000000
 
 set -x
-ssh "$remoteLogin" dd if=/dev/zero bs=$blockSize count=$blockCount | time dd of=/dev/null bs=$blockSize count=$blockCount
-
+ssh -o "Compression no" "$remoteLogin" cat /dev/urandom | time dd of=/dev/null bs=$blockSize count=$blockCount
+cat /dev/urandom | ssh -o "Compression no" "$remoteLogin" time dd of=/dev/null bs=$blockSize count=$blockCount
