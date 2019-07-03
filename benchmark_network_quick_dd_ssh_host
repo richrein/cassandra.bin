@@ -14,10 +14,23 @@ else
 	remoteLogin="$1"; shift
 fi
 
+# 
+# Complete blocks in dd:
+# The dd utility is prone to reading short blocks from a network.
+# The solution is to use iflag=fullblock on the receiver (if the receiving dd recognizes it.)
+# Else, use a small receiving block size (bs or ibs) like 1024 to ensure there is enough buffered for each block read.
+# 
 blockSize=1024
 blockCount=10000
 #blockCount=1000000
 
+#
+# Data source.
+# Use /dev/urandom if available, else /dev/null
+#
+dataSource-/dev/urandom
+#dataSource-/dev/null
+
 set -x
-ssh -o "Compression no" "$remoteLogin" cat /dev/urandom | time dd of=/dev/null bs=$blockSize count=$blockCount
-cat /dev/urandom | ssh -o "Compression no" "$remoteLogin" time dd of=/dev/null bs=$blockSize count=$blockCount
+ssh -o "Compression no" "$remoteLogin" cat $dataSource | time dd of=/dev/null bs=$blockSize count=$blockCount
+cat $dataSource | ssh -o "Compression no" "$remoteLogin" time dd of=/dev/null bs=$blockSize count=$blockCount
