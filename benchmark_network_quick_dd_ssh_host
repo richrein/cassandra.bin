@@ -11,8 +11,6 @@
 # Cat is used to push as many bytes as possible thought a single ssh TCP/IP connection.
 # The dd utility is used to measure the amount of data received.
 # Random and disabled compression is used where possible to sample the raw network throughput.
-# If the throughput is high enough, sometimes /dev/urandom computations or small dd bs size. It these cases, 
-# it might be worth it to test again with /dev/zero and with iflag=fullblock with a larger blocksize.
 #
 
 export thisCommand=`basename $0`
@@ -30,6 +28,8 @@ fi
 # The dd utility is prone to reading short blocks from a network.
 # The best solution is to use iflag=fullblock on the receiver (if the receiving dd recognizes it.)
 # Else, use a small receiving block size (bs or ibs) like 1024 to ensure there is enough buffered for each block read.
+# If the throughput is high enough, sometimes /dev/urandom computations or small dd bs size. It these cases, 
+# it might be worth it to test again with /dev/zero and with iflag=fullblock with a larger blocksize.
 # 
 blockSize=1024
 
