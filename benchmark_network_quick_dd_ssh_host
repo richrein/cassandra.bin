@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 
 # Simple network bandwidth sanity test
-# Rich Rein 2014-2019 Apache 2.0
+# Rich Rein 2014-2019
 #
 # This is not a full network test to load or measure a network.
 # This is provides a quick sample of the minimum throughput of a single connection for a short amount of time.
