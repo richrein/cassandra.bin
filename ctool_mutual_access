@@ -23,6 +23,9 @@ if [ x"$1" != x ]; then
 	fi
 fi
 
+#
+# Allow_access between all node private and public ips
+#
 ips="$(echo $(
 	(
 		for (( i=1; i <= "$#"; i++ )); do
@@ -40,4 +43,40 @@ for (( i=1; i <= "$#"; i++ )); do
 		ctool allow_access $cluster $ips
 	)
 done
+
+#
+# Copy all public and private keys to all nodes
+#
+(
+	for (( i=1; i <= "$#"; i++ )); do
+		for (( j=1; j <= "$#"; j++ )); do
+			clusterSrc="${!i}"
+			clusterDst="${!j}"
+			(
+				set -x
+				ctool scp $clusterDst all /Users/richrein/.automaton/*/*/$clusterSrc/public_key ${clusterSrc}_pub
+				ctool scp $clusterDst all /Users/richrein/.automaton/*/*/$clusterSrc/private_key ${clusterSrc}_pri
+			)
+		done
+	done
+
+)
+
+#
+# Append public keys on nodes onto .ssh/authorized_keys
+#
+(
+	for (( i=1; i <= "$#"; i++ )); do
+		cluster="${!i}"
+		public_ips="$(echo $(ctool info $cluster | grep 'public ip:' | sed -e 's/.*:\(.*\)/\1/' ))"
+		echo cluster $cluster pub $public_ips
+		for public_ip in $public_ips; do
+			(
+				# Append public keys
+				set -x
+				ssh -i $HOME/.automaton/*/*/$cluster/private_key automaton@$public_ip  cat \*_pub \>\> .ssh/authorized_keys 
+			)
+		done
+	done
+)
 
