@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 #
+# ctool_mutual_access - join 2 or more ctool clusters in key sharing and internode ip access permissions
+#
 # Rich Rein 2019 Apache 2.0 license
 #
 
