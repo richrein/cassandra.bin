@@ -5,7 +5,7 @@
 #
 # Allows access any node from any node with either private key. 
 #
-# Usage: ctool_allow_mutual_access cluster1 cluster2 clusterN`
+# Usage: ctool_allow_mutual_access cluster1 cluster2 clusterN
 #
 # Gives all nodes in all clusters access to each other’s ips.
 # The public keys for all clusters are in each others .ssh/authorized_keys files.
