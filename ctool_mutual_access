@@ -3,6 +3,11 @@
 #
 # ctool_mutual_access - join 2 or more ctool clusters in key sharing and internode ip access permissions
 #
+# Allows access any node from any node with either private key. 
+#
+# Gives all nodes in all clusters access to each other’s ips.
+# The public keys for all clusters are in each others .ssh/authorized_keys files.
+#
 # Rich Rein 2019 Apache 2.0 license
 #
 
