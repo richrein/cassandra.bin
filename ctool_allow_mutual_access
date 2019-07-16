@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# ctool_mutual_access - join 2 or more ctool clusters in key sharing and internode ip access permissions
+# ctool_allow_mutual_access - join 2 or more ctool clusters in key sharing and internode ip access permissions
 #
 # Allows access any node from any node with either private key. 
 #
